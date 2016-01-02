@@ -43,3 +43,4 @@ drawBullet : Bullet -> Form
 drawBullet bullet =
   circle 5
     |> filled lightRed
+    |> move (bullet.position.x, bullet.position.y)
