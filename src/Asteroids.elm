@@ -18,34 +18,40 @@ initGame : Game
 initGame =
   { ship = initShip }
 
+-- UPDATE
+
+update : (Float, KeyInput) -> Game -> Game
+update (dt, keyInput) game =
+  { game
+  | ship = updateShip (dt, keyInput) game.ship
+  }
 
 -- VIEW
 
-view : Ship -> Element
-view ship =
+view : Game -> Element
+view game =
   container gameWidth gameHeight middle <|
     collage gameWidth gameHeight
       [ rect gameWidth gameHeight
         |> filled lightOrange
-      , drawShip ship
+      , drawShip game.ship
       ]
-
 
 -- SIGNALS
 
-shipState : Signal Ship
-shipState =
-  Signal.foldp updateShip initShip inputSignal
+gameState : Signal Game
+gameState =
+  Signal.foldp update initGame inputSignal
 
 
 inputSignal : Signal (Float, KeyInput)
 inputSignal =
   let delta = fps 30
       tuples = Signal.map2 (,) delta Keyboard.arrows
-  in  Signal.sampleOn delta tuples
+  in Signal.sampleOn delta tuples
 
 
 main : Signal Element
 main =
-  Signal.map view shipState
+  Signal.map view gameState
   --Signal.map show shipState
