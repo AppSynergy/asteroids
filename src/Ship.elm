@@ -70,14 +70,15 @@ updateVelocity : Float -> Float -> Float -> Vector2 -> Vector2
 updateVelocity dt thrust facing velocity =
   let
     thrustRate = 3
+    upperLimit = 100
     facing' = degrees facing
     newVelocityY = velocity.y + thrustRate * cos facing'
     newVelocityX = velocity.x - thrustRate * sin facing'
   in
   if thrust == 1 then
     { velocity
-    | y = newVelocityY
-    , x = newVelocityX
+    | y = min upperLimit newVelocityY
+    , x = min upperLimit newVelocityX
     }
   else
     velocity |> updateDrag
