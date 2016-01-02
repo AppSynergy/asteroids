@@ -11,13 +11,6 @@ import Config exposing (..)
 
 -- MODEL
 
--- http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Keyboard#arrows
-type alias KeyInput =
-  { x : Int
-  , y : Int
-  }
-
-
 type alias Game =
   { ship : Ship
   , bullets: List Bullet
@@ -42,7 +35,7 @@ update (dt, keyInput, fireInput) game =
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = activeBullets
+  , bullets = List.map (updateBullet dt) activeBullets
   }
 
 -- VIEW
@@ -50,15 +43,17 @@ update (dt, keyInput, fireInput) game =
 view : Game -> Element
 view game =
   let
+    background = rect gameWidth gameHeight
+      |> filled black
+    theShip = drawShip game.ship
     activeBullets = List.map drawBullet game.bullets
+    allForms = List.concat
+      [ [ background, theShip ]
+      , activeBullets
+      ]
   in
   container gameWidth gameHeight middle <|
-    collage gameWidth gameHeight
-      ([ rect gameWidth gameHeight
-        |> filled black
-      , drawShip game.ship
-      ]
-        |> List.append activeBullets )
+    collage gameWidth gameHeight allForms
 
 -- SIGNALS
 

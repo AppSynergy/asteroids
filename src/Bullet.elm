@@ -33,12 +33,13 @@ firingVelocity ship =
   , x = velocity.x * 2
   }
 
-
 -- UPDATE
 
-updateBullet : Bullet -> Bullet
-updateBullet bullet =
-  bullet --todo
+updateBullet : Float -> Bullet -> Bullet
+updateBullet dt bullet =
+  { bullet
+  | position = updatePosition dt bullet.velocity bullet.position
+  }
 
 -- VIEW
 
