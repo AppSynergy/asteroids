@@ -47,9 +47,12 @@ initShip =
 update : (Float, KeyInput) -> Ship -> Ship
 update (dt, keyInput) ship =
   let
-    deltaFacing = toFloat keyInput.x
+    leftRightInput = toFloat keyInput.x
+    upDownInput = toFloat keyInput.y
+    -- only up arrow (thruster) does anything
+    thrust = if upDownInput > 0 then upDownInput else 0
   in
-  updateFacing deltaFacing ship
+  updateFacing leftRightInput ship
 
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
@@ -59,9 +62,9 @@ updateFacing newFacing ship =
   in
   { ship | facing = dF }
 
-updateShipPhysics : (Float, Float, Float) -> Ship -> Ship
-updateShipPhysics (turnLeft, turnRight, thrust) ship =
-  ship
+updateThrust : Float -> Ship -> Ship
+updateThrust thrust ship =
+  ship --TODO
 
 
 -- VIEW
