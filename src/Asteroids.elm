@@ -149,14 +149,13 @@ drawShip ship =
   let
     triangle = ngon 3 32
       |> filled green
-      |> rotate (degrees ship.facing)
-      |> move (ship.position.x, ship.position.y)
-    circle' = circle 8
+    engines = rect 4 32
       |> filled black
-      |> rotate (degrees ship.facing)
-      |> move (ship.position.x, ship.position.y+12)
+      |> move ( -18 , 0 )
   in
-  group [ triangle , circle' ]
+  group [ triangle , engines ]
+    |> rotate ( degrees (ship.facing + 90 ))
+    |> move (ship.position.x, ship.position.y)
 
 -- SIGNALS
 
