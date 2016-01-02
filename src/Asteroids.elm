@@ -7,7 +7,8 @@ import Time exposing (..)
 import Window
 import Keyboard
 
-(gameWidth, gameHeight) = (620,480)
+(gameWidth, gameHeight) = (620, 480)
+(halfWidth, halfHeight) = (310, 240)
 
 -- MODEL
 
@@ -111,16 +112,27 @@ updateVelocity dt thrust facing velocity =
     velocity |> updateDrag
 
 
+wrapGeometry : Float -> Float -> Float
+wrapGeometry position dimension =
+  if position > dimension then
+    -dimension
+  else if position < -dimension then
+    dimension
+  else position
+
+
 updatePosition : Float -> Vector2 -> Vector2 -> Vector2
 updatePosition dt velocity position =
   let
     scale = 0.01
     newPositionY = position.y + velocity.y * scale * dt
     newPositionX = position.x + velocity.x * scale * dt
+    newPositionY' = wrapGeometry newPositionY halfHeight
+    newPositionX' = wrapGeometry newPositionX halfWidth
   in
   { position
-  | y = newPositionY |> floor >> toFloat
-  , x = newPositionX |> floor >> toFloat
+  | y = newPositionY'
+  , x = newPositionX'
   }
 
 
