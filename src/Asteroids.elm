@@ -57,7 +57,7 @@ update (dt, keyInput) ship =
   -- apply the various update functions to Ship record
   ship
   |> updateFacing leftRightInput
-  |> updateThrust thrust
+  |> updateThrust thrust dt
 
 
 updateFacing : Float -> Ship -> Ship
@@ -69,28 +69,38 @@ updateFacing newFacing ship =
   { ship | facing = dF }
 
 
-updateThrust : Float -> Ship -> Ship
-updateThrust thrust ship =
+updateThrust : Float -> Float -> Ship -> Ship
+updateThrust thrust dt ship =
   { ship
   | thrust = thrust
   , velocity = updateVelocity thrust ship.facing ship.velocity
+  , position = updatePosition dt ship.velocity ship.position
   }
 
 
 updateVelocity : Float -> Float -> Vector2 -> Vector2
 updateVelocity thrust facing velocity =
   let
-    thrustRate = 5
+    thrustRate = 2
     facing' = degrees facing
   in
   if thrust == 1 then
     { velocity
-    | y = velocity.y + (thrustRate * cos facing')
-    , x = velocity.x + (thrustRate * sin facing')
+    | y = velocity.y + thrustRate * cos facing' |> floor >> toFloat
+    , x = velocity.x + thrustRate * sin facing' |> floor >> toFloat
     }
   else
     velocity
 
+updatePosition : Float -> Vector2 -> Vector2 -> Vector2
+updatePosition dt velocity position =
+  let
+    scale = 1
+  in
+  { position
+  | y = position.y + velocity.y * scale * dt |> floor >> toFloat
+  , x = position.x + velocity.x * scale * dt |> floor >> toFloat
+  }
 
 -- VIEW
 
