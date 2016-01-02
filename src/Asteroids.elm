@@ -16,6 +16,7 @@ type alias Vector2 =
   , y : Float
   }
 
+
 type alias Ship =
   { firing : Bool
   , velocity : Vector2
@@ -24,16 +25,24 @@ type alias Ship =
   , thrust : Float
   }
 
+
 type Input
   = TurnLeft
   | TurnRight
   | Thrust
   | FireWeapon
 
+
+-- http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Keyboard#arrows
 type alias KeyInput =
   { x : Int
   , y : Int
   }
+
+
+type alias Game =
+  { ship : Ship }
+
 
 initShip : Ship
 initShip =
@@ -44,10 +53,16 @@ initShip =
   , thrust = 0
   }
 
+
+initGame : Game
+initGame =
+  { ship = initShip }
+
+
 -- UPDATE
 
-update : (Float, KeyInput) -> Ship -> Ship
-update (dt, keyInput) ship =
+updateShip : (Float, KeyInput) -> Ship -> Ship
+updateShip (dt, keyInput) ship =
   let
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
@@ -107,6 +122,7 @@ updatePosition dt velocity position =
   , x = newPositionX |> floor >> toFloat
   }
 
+
 updateDrag : Vector2 -> Vector2
 updateDrag velocity =
   let
@@ -121,6 +137,11 @@ updateDrag velocity =
 
 -- SIGNALS
 
+shipState : Signal Ship
+shipState =
+  Signal.foldp updateShip initShip inputSignal
+
+
 inputSignal : Signal (Float, KeyInput)
 inputSignal =
   let delta = fps 30
@@ -130,4 +151,4 @@ inputSignal =
 
 main : Signal Element
 main =
-  Signal.map show (Signal.foldp update initShip inputSignal)
+  Signal.map show shipState
