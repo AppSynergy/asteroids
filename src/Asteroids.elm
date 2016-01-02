@@ -113,7 +113,7 @@ updateVelocity dt thrust facing velocity =
 updatePosition : Float -> Vector2 -> Vector2 -> Vector2
 updatePosition dt velocity position =
   let
-    scale = 1
+    scale = 0.01
     newPositionY = position.y + velocity.y * scale * dt
     newPositionX = position.x + velocity.x * scale * dt
   in
@@ -126,7 +126,7 @@ updatePosition dt velocity position =
 updateDrag : Vector2 -> Vector2
 updateDrag velocity =
   let
-    dragRate = 0.5
+    dragRate = 1
   in
   { velocity
   | y = if velocity.y > 0 then velocity.y - dragRate else 0
@@ -134,6 +134,22 @@ updateDrag velocity =
   }
 
 -- VIEW
+
+view : Ship -> Element
+view ship =
+  container gameWidth gameHeight middle <|
+    collage gameWidth gameHeight
+      [ rect gameWidth gameHeight
+        |> filled lightOrange
+      , make ship
+      ]
+
+
+make obj =
+  oval 16 32
+    |> filled green
+    |> move (obj.position.x, obj.position.y)
+
 
 -- SIGNALS
 
@@ -151,4 +167,5 @@ inputSignal =
 
 main : Signal Element
 main =
-  Signal.map show shipState
+  Signal.map view shipState
+  --Signal.map show shipState
