@@ -103,9 +103,9 @@ drawShip : Ship -> Form
 drawShip ship =
   let
     triangle = ngon 3 32
-      |> filled green
+      |> filled lightGreen
     engines = rect 4 32
-      |> filled black
+      |> filled lightOrange
       |> move ( -18 , 0 )
   in
   group [ triangle , engines ]

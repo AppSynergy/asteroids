@@ -14,17 +14,32 @@ type alias Bullet =
   , position : Vector2
   }
 
+
 initBullet : Ship -> Bullet
 initBullet ship =
   { velocity = firingVelocity ship
   , position = ship.position
   }
 
+
+-- currently the bullet travels at twice the ship speed
+-- this is simple, but not correct
 firingVelocity : Ship -> Vector2
 firingVelocity ship =
-  ship.velocity --todo: bullet must go faster than ship!
+  let
+    velocity = ship.velocity
+  in
+  { velocity
+  | y = velocity.y * 2
+  , x = velocity.x * 2
+  }
 
 
 -- UPDATE
 
 -- VIEW
+
+drawBullet : Bullet -> Form
+drawBullet bullet =
+  circle 5
+    |> filled lightRed

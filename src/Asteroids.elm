@@ -6,24 +6,36 @@ import Graphics.Element exposing (..)
 import Time exposing (..)
 import Keyboard
 import Ship exposing (..)
+import Bullet exposing (..)
 import Generic exposing (..)
 
 -- MODEL
 
 type alias Game =
-  { ship : Ship }
+  { ship : Ship
+  , bullets: List Bullet
+  }
 
 
 initGame : Game
 initGame =
-  { ship = initShip }
+  { ship = initShip
+  , bullets = []
+  }
 
 -- UPDATE
 
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
+  let
+    activeBullets = if game.ship.firing then
+      (initBullet game.ship) :: game.bullets
+    else
+      game.bullets
+  in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
+  , bullets = activeBullets
   }
 
 -- VIEW
@@ -33,7 +45,7 @@ view game =
   container gameWidth gameHeight middle <|
     collage gameWidth gameHeight
       [ rect gameWidth gameHeight
-        |> filled lightOrange
+        |> filled black
       , drawShip game.ship
       ]
 
@@ -55,5 +67,5 @@ inputSignal =
 
 main : Signal Element
 main =
-  Signal.map view gameState
-  --Signal.map show gameState
+  --Signal.map view gameState
+  Signal.map show gameState
