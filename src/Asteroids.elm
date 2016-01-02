@@ -73,14 +73,21 @@ updateThrust : Float -> Ship -> Ship
 updateThrust thrust ship =
   { ship
   | thrust = thrust
-  , velocity = updateVelocity thrust ship.velocity
+  , velocity = updateVelocity thrust ship.facing ship.velocity
   }
 
 
-updateVelocity : Float -> Vector2 -> Vector2
-updateVelocity thrust velocity =
+updateVelocity : Float -> Float -> Vector2 -> Vector2
+updateVelocity thrust facing velocity =
+  let
+    thrustRate = 5
+    facing' = degrees facing
+  in
   if thrust == 1 then
-    { velocity | x = velocity.x + 1 }
+    { velocity
+    | y = velocity.y + (thrustRate * cos facing')
+    , x = velocity.x + (thrustRate * sin facing')
+    }
   else
     velocity
 
