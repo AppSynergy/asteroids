@@ -33,8 +33,8 @@ initShip =
 
 -- UPDATE
 
-updateShip : (Float, KeyInput) -> Ship -> Ship
-updateShip (dt, keyInput) ship =
+updateShip : (Float, KeyInput, Bool) -> Ship -> Ship
+updateShip (dt, keyInput, fireInput) ship =
   let
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
@@ -45,6 +45,12 @@ updateShip (dt, keyInput) ship =
   ship
   |> updateFacing leftRightInput
   |> updateThrust thrust dt
+  |> updateFiring fireInput
+
+
+updateFiring : Bool -> Ship -> Ship
+updateFiring fireInput ship =
+  { ship | firing = fireInput }
 
 
 updateFacing : Float -> Ship -> Ship

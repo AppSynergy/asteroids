@@ -20,10 +20,10 @@ initGame =
 
 -- UPDATE
 
-update : (Float, KeyInput) -> Game -> Game
-update (dt, keyInput) game =
+update : (Float, KeyInput, Bool) -> Game -> Game
+update (dt, keyInput, fireInput) game =
   { game
-  | ship = updateShip (dt, keyInput) game.ship
+  | ship = updateShip (dt, keyInput, fireInput) game.ship
   }
 
 -- VIEW
@@ -44,14 +44,16 @@ gameState =
   Signal.foldp update initGame inputSignal
 
 
-inputSignal : Signal (Float, KeyInput)
+inputSignal : Signal (Float, KeyInput, Bool)
 inputSignal =
-  let delta = fps 30
-      tuples = Signal.map2 (,) delta Keyboard.arrows
-  in Signal.sampleOn delta tuples
+  let
+    delta = fps 30
+    tuples = Signal.map3 (,,) delta Keyboard.arrows Keyboard.space
+  in
+  Signal.sampleOn delta tuples
 
 
 main : Signal Element
 main =
-  Signal.map view gameState
-  --Signal.map show shipState
+  --Signal.map view gameState
+  Signal.map show gameState
