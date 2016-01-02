@@ -7,9 +7,16 @@ import Time exposing (..)
 import Keyboard
 import Ship exposing (..)
 import Bullet exposing (..)
-import Generic exposing (..)
+import Config exposing (..)
 
 -- MODEL
+
+-- http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Keyboard#arrows
+type alias KeyInput =
+  { x : Int
+  , y : Int
+  }
+
 
 type alias Game =
   { ship : Ship

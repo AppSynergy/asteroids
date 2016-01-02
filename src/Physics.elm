@@ -1,6 +1,11 @@
 module Physics where
 
-import Generic exposing (..)
+import Config exposing (halfWidth, halfHeight)
+
+type alias Vector2 =
+  { x : Float
+  , y : Float
+  }
 
 updatePosition : Float -> Vector2 -> Vector2 -> Vector2
 updatePosition dt velocity position =

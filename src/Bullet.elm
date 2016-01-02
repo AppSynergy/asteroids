@@ -3,7 +3,6 @@ module Bullet where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Generic exposing (..)
 import Ship exposing (Ship)
 import Physics exposing (..)
 
@@ -36,6 +35,10 @@ firingVelocity ship =
 
 
 -- UPDATE
+
+updateBullet : Bullet -> Bullet
+updateBullet bullet =
+  bullet --todo
 
 -- VIEW
 

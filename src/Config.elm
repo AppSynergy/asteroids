@@ -1,4 +1,4 @@
-module Generic where
+module Config where
 
 (gameWidth, gameHeight) = (620, 480)
 (halfWidth, halfHeight) = (310, 240)
@@ -7,10 +7,4 @@ module Generic where
 type alias KeyInput =
   { x : Int
   , y : Int
-  }
-
-
-type alias Vector2 =
-  { x : Float
-  , y : Float
   }

@@ -3,7 +3,7 @@ module Ship where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Generic exposing (..)
+import Config exposing (KeyInput)
 import Physics exposing (..)
 
 -- MODEL
