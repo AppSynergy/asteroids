@@ -73,33 +73,48 @@ updateThrust : Float -> Float -> Ship -> Ship
 updateThrust thrust dt ship =
   { ship
   | thrust = thrust
-  , velocity = updateVelocity thrust ship.facing ship.velocity
+  , velocity = updateVelocity dt thrust ship.facing ship.velocity
   , position = updatePosition dt ship.velocity ship.position
   }
 
 
-updateVelocity : Float -> Float -> Vector2 -> Vector2
-updateVelocity thrust facing velocity =
+updateVelocity : Float -> Float -> Float -> Vector2 -> Vector2
+updateVelocity dt thrust facing velocity =
   let
-    thrustRate = 2
+    thrustRate = 3
     facing' = degrees facing
+    newVelocityY = velocity.y + thrustRate * cos facing'
+    newVelocityX = velocity.x + thrustRate * sin facing'
   in
   if thrust == 1 then
     { velocity
-    | y = velocity.y + thrustRate * cos facing' |> floor >> toFloat
-    , x = velocity.x + thrustRate * sin facing' |> floor >> toFloat
+    | y = newVelocityY |> floor >> toFloat
+    , x = newVelocityX |> floor >> toFloat
     }
   else
-    velocity
+    velocity |> updateDrag
+
 
 updatePosition : Float -> Vector2 -> Vector2 -> Vector2
 updatePosition dt velocity position =
   let
     scale = 1
+    newPositionY = position.y + velocity.y * scale * dt
+    newPositionX = position.x + velocity.x * scale * dt
   in
   { position
-  | y = position.y + velocity.y * scale * dt |> floor >> toFloat
-  , x = position.x + velocity.x * scale * dt |> floor >> toFloat
+  | y = newPositionY |> floor >> toFloat
+  , x = newPositionX |> floor >> toFloat
+  }
+
+updateDrag : Vector2 -> Vector2
+updateDrag velocity =
+  let
+    dragRate = 0.5
+  in
+  { velocity
+  | y = if velocity.y > 0 then velocity.y - dragRate else 0
+  , x = if velocity.x > 0 then velocity.x - dragRate else 0
   }
 
 -- VIEW
