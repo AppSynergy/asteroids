@@ -7,12 +7,6 @@ import Generic exposing (..)
 
 -- MODEL
 
-type alias Vector2 =
-  { x : Float
-  , y : Float
-  }
-
-
 type alias Ship =
   { firing : Bool
   , velocity : Vector2

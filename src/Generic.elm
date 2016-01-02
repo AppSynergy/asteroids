@@ -8,3 +8,9 @@ type alias KeyInput =
   { x : Int
   , y : Int
   }
+
+
+type alias Vector2 =
+  { x : Float
+  , y : Float
+  }
