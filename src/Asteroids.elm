@@ -78,7 +78,8 @@ updateShip (dt, keyInput) ship =
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
   let
-    turnRate = 10
+    -- turn rate is -ve since left = -1
+    turnRate = -10
     dF = turnRate * newFacing + ship.facing
   in
   { ship | facing = dF }
@@ -99,7 +100,7 @@ updateVelocity dt thrust facing velocity =
     thrustRate = 3
     facing' = degrees facing
     newVelocityY = velocity.y + thrustRate * cos facing'
-    newVelocityX = velocity.x + thrustRate * sin facing'
+    newVelocityX = velocity.x - thrustRate * sin facing'
   in
   if thrust == 1 then
     { velocity
@@ -127,10 +128,12 @@ updateDrag : Vector2 -> Vector2
 updateDrag velocity =
   let
     dragRate = 1
+    dragRateX = if velocity.x > 0 then dragRate else -dragRate
+    dragRateY = if velocity.y > 0 then dragRate else -dragRate
   in
   { velocity
-  | y = if velocity.y > 0 then velocity.y - dragRate else 0
-  , x = if velocity.x > 0 then velocity.x - dragRate else 0
+  | y = if abs velocity.y > 0 then velocity.y - dragRateY else 0
+  , x = if abs velocity.x > 0 then velocity.x - dragRateX else 0
   }
 
 -- VIEW
