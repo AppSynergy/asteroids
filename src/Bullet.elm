@@ -38,7 +38,7 @@ firingVelocity ship =
 updateBullet : Float -> Bullet -> Bullet
 updateBullet dt bullet =
   { bullet
-  | position = updatePosition dt bullet.velocity bullet.position
+  | position = updatePosition False dt bullet.velocity bullet.position
   }
 
 -- VIEW

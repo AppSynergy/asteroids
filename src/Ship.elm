@@ -63,7 +63,7 @@ updateThrust thrust dt ship =
   { ship
   | thrust = thrust
   , velocity = updateVelocity dt thrust ship.facing ship.velocity
-  , position = updatePosition dt ship.velocity ship.position
+  , position = updatePosition True dt ship.velocity ship.position
   }
 
 

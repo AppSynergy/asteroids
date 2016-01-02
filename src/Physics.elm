@@ -7,14 +7,20 @@ type alias Vector2 =
   , y : Float
   }
 
-updatePosition : Float -> Vector2 -> Vector2 -> Vector2
-updatePosition dt velocity position =
+updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
+updatePosition isWrappable dt velocity position =
   let
     scale = 0.01
     newPositionY = position.y + velocity.y * scale * dt
     newPositionX = position.x + velocity.x * scale * dt
-    newPositionY' = wrapGeometry newPositionY halfHeight
-    newPositionX' = wrapGeometry newPositionX halfWidth
+    newPositionY' = if isWrappable then
+      wrapGeometry newPositionY halfHeight
+    else
+      newPositionY
+    newPositionX' = if isWrappable then
+      wrapGeometry newPositionX halfWidth
+    else
+      newPositionX
   in
   { position
   | y = newPositionY' |> floor >> toFloat
