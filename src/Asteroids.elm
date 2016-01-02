@@ -21,6 +21,7 @@ type alias Ship =
   , velocity : Vector2
   , position : Vector2
   , facing : Float
+  , thrust : Float
   }
 
 type Input
@@ -40,6 +41,7 @@ initShip =
   , velocity = { x = 0, y = 0 }
   , position = { x = 0, y = 0 }
   , facing = 0
+  , thrust = 0
   }
 
 -- UPDATE
@@ -52,7 +54,11 @@ update (dt, keyInput) ship =
     -- only up arrow (thruster) does anything
     thrust = if upDownInput > 0 then upDownInput else 0
   in
-  updateFacing leftRightInput ship
+  -- apply the various update functions to Ship record
+  ship
+  |> updateFacing leftRightInput
+  |> updateThrust thrust
+
 
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
@@ -62,9 +68,21 @@ updateFacing newFacing ship =
   in
   { ship | facing = dF }
 
+
 updateThrust : Float -> Ship -> Ship
 updateThrust thrust ship =
-  ship --TODO
+  { ship
+  | thrust = thrust
+  , velocity = updateVelocity thrust ship.velocity
+  }
+
+
+updateVelocity : Float -> Vector2 -> Vector2
+updateVelocity thrust velocity =
+  if thrust == 1 then
+    { velocity | x = velocity.x + 1 }
+  else
+    velocity
 
 
 -- VIEW
