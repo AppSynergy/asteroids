@@ -141,15 +141,22 @@ view ship =
     collage gameWidth gameHeight
       [ rect gameWidth gameHeight
         |> filled lightOrange
-      , make ship
+      , drawShip ship
       ]
 
-
-make obj =
-  oval 16 32
-    |> filled green
-    |> move (obj.position.x, obj.position.y)
-
+drawShip : Ship -> Form
+drawShip ship =
+  let
+    triangle = ngon 3 32
+      |> filled green
+      |> rotate (degrees ship.facing)
+      |> move (ship.position.x, ship.position.y)
+    circle' = circle 8
+      |> filled black
+      |> rotate (degrees ship.facing)
+      |> move (ship.position.x, ship.position.y+12)
+  in
+  group [ triangle , circle' ]
 
 -- SIGNALS
 
