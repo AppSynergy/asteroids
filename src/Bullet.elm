@@ -5,6 +5,7 @@ import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Generic exposing (..)
 import Ship exposing (Ship)
+import Physics exposing (..)
 
 -- MODEL
 
@@ -15,10 +16,15 @@ type alias Bullet =
 
 initBullet : Ship -> Bullet
 initBullet ship =
-  { velocity = firingVelocity ship.velocity
+  { velocity = firingVelocity ship
   , position = ship.position
   }
 
-firingVelocity : Vector2 -> Vector2
-firingVelocity velocity =
-  velocity --todo: bullet must go faster than ship!
+firingVelocity : Ship -> Vector2
+firingVelocity ship =
+  ship.velocity --todo: bullet must go faster than ship!
+
+
+-- UPDATE
+
+-- VIEW
