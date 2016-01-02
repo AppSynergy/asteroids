@@ -83,8 +83,8 @@ updateVelocity dt thrust facing velocity =
   in
   if thrust == 1 then
     { velocity
-    | y = min upperLimit newVelocityY
-    , x = min upperLimit newVelocityX
+    | y = min upperLimit newVelocityY |> floor >> toFloat
+    , x = min upperLimit newVelocityX |> floor >> toFloat
     }
   else
     velocity |> updateDrag
@@ -109,8 +109,8 @@ updatePosition dt velocity position =
     newPositionX' = wrapGeometry newPositionX halfWidth
   in
   { position
-  | y = newPositionY'
-  , x = newPositionX'
+  | y = newPositionY' |> floor >> toFloat
+  , x = newPositionX' |> floor >> toFloat
   }
 
 

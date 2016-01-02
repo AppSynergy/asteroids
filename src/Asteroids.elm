@@ -55,5 +55,5 @@ inputSignal =
 
 main : Signal Element
 main =
-  --Signal.map view gameState
-  Signal.map show gameState
+  Signal.map view gameState
+  --Signal.map show gameState
