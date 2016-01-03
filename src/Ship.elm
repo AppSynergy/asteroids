@@ -48,15 +48,17 @@ updateShip (dt, keyInput, fireInput) ship =
 updateFiring : Bool -> Ship -> Ship
 updateFiring fireInput ship =
   let
+    fireOK = ship.coolDown == 0 && fireInput
     coolDownTime = 8
-    newCoolDown = if ship.coolDown == 0 then
+    newCoolDown = if fireOK then
       coolDownTime
-    else
+    else if ship.coolDown > 0 then
       ship.coolDown - 1
-    canFire = ship.coolDown == 0 && fireInput
+    else
+      ship.coolDown
   in
   { ship
-  | firing = canFire
+  | firing = fireOK
   , coolDown = newCoolDown
   }
 
