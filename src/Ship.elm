@@ -14,6 +14,7 @@ type alias Ship =
   , position : Vector2
   , facing : Float
   , thrust : Float
+  , coolDown : Int
   }
 
 
@@ -24,6 +25,7 @@ initShip =
   , position = { x = 0, y = 0 }
   , facing = 0
   , thrust = 0
+  , coolDown = 0
   }
 
 -- UPDATE
@@ -45,7 +47,18 @@ updateShip (dt, keyInput, fireInput) ship =
 
 updateFiring : Bool -> Ship -> Ship
 updateFiring fireInput ship =
-  { ship | firing = fireInput }
+  let
+    coolDownTime = 8
+    newCoolDown = if ship.coolDown == 0 then
+      coolDownTime
+    else
+      ship.coolDown - 1
+    canFire = ship.coolDown == 0 && fireInput
+  in
+  { ship
+  | firing = canFire
+  , coolDown = newCoolDown
+  }
 
 
 updateFacing : Float -> Ship -> Ship
