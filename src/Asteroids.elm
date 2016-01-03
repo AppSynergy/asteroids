@@ -5,9 +5,11 @@ import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Time exposing (..)
 import Keyboard
+import Text exposing (..)
 import Ship exposing (..)
 import Bullet exposing (..)
 import Config exposing (..)
+
 
 -- MODEL
 
@@ -45,16 +47,25 @@ view : Game -> Element
 view game =
   let
     background = rect gameWidth gameHeight
-      |> filled black
+      |> filled lightBlue
     theShip = drawShip game.ship
     activeBullets = List.map drawBullet game.bullets
     allForms = List.concat
       [ [ background, theShip ]
       , activeBullets
+      , [ viewGameState game ]
       ]
   in
   container gameWidth gameHeight middle <|
     collage gameWidth gameHeight allForms
+
+
+viewGameState : Game -> Form
+viewGameState game =
+  show game
+    |> toForm
+    |> move (-halfWidth,0)
+
 
 -- SIGNALS
 
