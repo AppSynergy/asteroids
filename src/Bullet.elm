@@ -16,19 +16,19 @@ type alias Bullet =
 
 initBullet : Ship -> Bullet
 initBullet ship =
-  { velocity = firingVelocity ship
+  { velocity = firingVelocity ship.facing
   , position = ship.position
   }
 
 
-firingVelocity : Ship -> Vector2
-firingVelocity ship =
+firingVelocity : Float -> Vector2
+firingVelocity facing =
   let
     bulletSpeed = 50
-    facing = degrees ship.facing
+    facing' = degrees facing
   in
-  { y = bulletSpeed * cos facing
-  , x = bulletSpeed * negate (sin facing)
+  { y = bulletSpeed * cos facing'
+  , x = bulletSpeed * negate (sin facing')
   }
 
 -- UPDATE
