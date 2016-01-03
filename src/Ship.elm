@@ -52,7 +52,7 @@ updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
   let
     -- turn rate is -ve since left = -1
-    turnRate = -10
+    turnRate = negate 10
     dF = turnRate * newFacing + ship.facing
   in
   { ship | facing = dF }
@@ -106,7 +106,7 @@ drawShip ship =
       |> filled lightGreen
     engines = rect 4 32
       |> filled lightOrange
-      |> move ( -18 , 0 )
+      |> move (-18 , 0)
   in
   group [ triangle , engines ]
     |> rotate ( degrees (ship.facing + 90 ))

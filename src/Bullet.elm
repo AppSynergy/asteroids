@@ -21,16 +21,14 @@ initBullet ship =
   }
 
 
--- currently the bullet travels at twice the ship speed
--- this is simple, but not correct
 firingVelocity : Ship -> Vector2
 firingVelocity ship =
   let
-    velocity = ship.velocity
+    bulletSpeed = 50
+    facing = degrees ship.facing
   in
-  { velocity
-  | y = velocity.y * 2
-  , x = velocity.x * 2
+  { y = bulletSpeed * cos facing
+  , x = bulletSpeed * negate (sin facing)
   }
 
 -- UPDATE
