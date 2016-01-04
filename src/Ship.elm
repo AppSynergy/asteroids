@@ -15,6 +15,11 @@ type alias Ship =
   , facing : Float
   , thrust : Float
   , coolDown : Int
+  , coolDownTime : Int
+  , turnRate : Float
+  , thrustRate : Float
+  , dragRate : Float
+  , maximumSpeed : Float
   }
 
 
@@ -26,6 +31,11 @@ initShip =
   , facing = 0
   , thrust = 0
   , coolDown = 0
+  , coolDownTime = 8
+  , turnRate = negate 10
+  , thrustRate = 3
+  , dragRate = 1
+  , maximumSpeed = 100
   }
 
 -- UPDATE
@@ -38,7 +48,6 @@ updateShip (dt, keyInput, fireInput) ship =
     -- only up arrow (thruster) does anything
     thrust = if upDownInput > 0 then upDownInput else 0
   in
-  -- apply the various update functions to Ship record
   ship
   |> updateFacing leftRightInput
   |> updateThrust thrust dt
@@ -49,7 +58,7 @@ updateFiring : Bool -> Ship -> Ship
 updateFiring fireInput ship =
   let
     fireOK = ship.coolDown == 0 && fireInput
-    coolDownTime = 8
+    coolDownTime = ship.coolDownTime
     newCoolDown = if fireOK then
       coolDownTime
     else if ship.coolDown > 0 then
@@ -66,8 +75,7 @@ updateFiring fireInput ship =
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
   let
-    -- turn rate is -ve since left = -1
-    turnRate = negate 10
+    turnRate = ship.turnRate
     dF = turnRate * newFacing + ship.facing
   in
   { ship | facing = dF }
@@ -77,17 +85,18 @@ updateThrust : Float -> Float -> Ship -> Ship
 updateThrust thrust dt ship =
   { ship
   | thrust = thrust
-  , velocity = updateVelocity dt thrust ship.facing ship.velocity
+  , velocity = updateVelocity dt thrust ship
   , position = updatePosition True dt ship.velocity ship.position
   }
 
 
-updateVelocity : Float -> Float -> Float -> Vector2 -> Vector2
-updateVelocity dt thrust facing velocity =
+updateVelocity : Float -> Float -> Ship -> Vector2
+updateVelocity dt thrust ship =
   let
-    thrustRate = 3
-    upperLimit = 100
-    facing' = degrees facing
+    thrustRate = ship.thrustRate
+    upperLimit = ship.maximumSpeed
+    facing' = degrees ship.facing
+    velocity = ship.velocity
     newVelocityY = velocity.y + thrustRate * cos facing'
     newVelocityX = velocity.x - thrustRate * sin facing'
   in
@@ -97,13 +106,14 @@ updateVelocity dt thrust facing velocity =
     , x = min upperLimit newVelocityX |> floor >> toFloat
     }
   else
-    velocity |> updateDrag
+    ship |> updateDrag
 
 
-updateDrag : Vector2 -> Vector2
-updateDrag velocity =
+updateDrag : Ship -> Vector2
+updateDrag ship =
   let
-    dragRate = 1
+    dragRate = ship.dragRate
+    velocity = ship.velocity
     dragRateX = if velocity.x > 0 then dragRate else -dragRate
     dragRateY = if velocity.y > 0 then dragRate else -dragRate
   in

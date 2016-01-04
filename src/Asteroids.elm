@@ -18,8 +18,7 @@ type alias Game =
   , bullets: List Bullet
   }
 
--- todo: Bullets remain in the List when they leave the map2
--- they probably need to get disposed of...
+
 initGame : Game
 initGame =
   { ship = initShip
