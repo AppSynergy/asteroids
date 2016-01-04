@@ -7,6 +7,7 @@ import Ship exposing (Ship)
 import Rock exposing (Rock)
 import Physics
 
+
 -- MODEL
 
 type alias Bullet =
@@ -40,18 +41,23 @@ firingVelocity facing speed =
   , x = speed * negate (sin facing')
   }
 
+
 -- UPDATE
 
-updateBullet : Float -> List Rock -> Bullet -> Maybe Bullet
+updateBullet : Float -> List Rock -> Bullet
+  -> Maybe Bullet
 updateBullet dt targets bullet =
   let
     stillAlive = bullet.lifetime > 0
     aging = if stillAlive then bullet.lifetime - 1 else 0
     newPosition = Physics.updatePosition
       False dt bullet.velocity bullet.position
-    hitTarget = detectCollisions targets bullet
+    collide = detectCollisions targets bullet
+    hitHappened = fst collide
+    hitWho = snd collide
+    dbg = Debug.watch "hit" hitWho
   in
-  if stillAlive && not hitTarget then
+  if stillAlive && not hitHappened then
     Just { bullet
     | position = newPosition
     , lifetime = aging
@@ -60,12 +66,22 @@ updateBullet dt targets bullet =
     Nothing
 
 
-detectCollisions : List (Physics.Collidable a) -> Bullet -> Bool
+detectCollisions : List (Physics.Collidable a) -> Bullet
+  -> (Bool, Maybe (Physics.Collidable a))
 detectCollisions targets bullet =
   let
     collisions = List.map (Physics.collides bullet) targets
+    hitBool = List.foldr (||) False
+      (List.map (fst) collisions)
+    hitObject = (List.map (snd) collisions)
   in
-  List.foldr (||) False collisions
+   (hitBool, firstNonEmpty hitObject)
+
+
+firstNonEmpty : List (Maybe a) -> Maybe a
+firstNonEmpty list =
+  List.head (List.filterMap identity list)
+
 
 -- VIEW
 

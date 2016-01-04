@@ -23,13 +23,18 @@ near k c n =
   n >= k - c && n <= k + c
 
 
-collides : Collidable a -> Collidable b -> Bool
+collides : Collidable a -> Collidable b
+  -> (Bool, Maybe (Collidable b))
 collides obj1 obj2 =
   let
-    range = 25
+    check = near obj1.position.x obj2.radius obj2.position.x
+      && near obj1.position.y obj2.radius obj2.position.y
+    hitObject = if check then
+      Just obj2
+    else
+      Nothing
   in
-  near obj1.position.x obj2.radius obj2.position.x
-    && near obj1.position.y obj2.radius obj2.position.y
+    (check, hitObject)
 
 
 updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
