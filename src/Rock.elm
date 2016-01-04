@@ -18,7 +18,7 @@ type alias Rock =
 initRock : Rock
 initRock =
   { velocity = { x = 5, y = 5 }
-  , position = { x = 30, y = -30 }
+  , position = randomPosition
   , size = 3
   }
 
