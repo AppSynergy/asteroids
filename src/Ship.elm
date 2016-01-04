@@ -4,14 +4,14 @@ import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Config exposing (KeyInput)
-import Physics exposing (..)
+import Physics
 
 -- MODEL
 
 type alias Ship =
   { firing : Bool
-  , velocity : Vector2
-  , position : Vector2
+  , velocity : Physics.Vector2
+  , position : Physics.Vector2
   , facing : Float
   , thrust : Float
   , coolDown : Int
@@ -86,11 +86,11 @@ updateThrust thrust dt ship =
   { ship
   | thrust = thrust
   , velocity = updateVelocity dt thrust ship
-  , position = updatePosition True dt ship.velocity ship.position
+  , position = Physics.updatePosition True dt ship.velocity ship.position
   }
 
 
-updateVelocity : Float -> Float -> Ship -> Vector2
+updateVelocity : Float -> Float -> Ship -> Physics.Vector2
 updateVelocity dt thrust ship =
   let
     thrustRate = ship.thrustRate
@@ -109,7 +109,7 @@ updateVelocity dt thrust ship =
     ship |> updateDrag
 
 
-updateDrag : Ship -> Vector2
+updateDrag : Ship -> Physics.Vector2
 updateDrag ship =
   let
     dragRate = ship.dragRate

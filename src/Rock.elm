@@ -4,13 +4,13 @@ import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Config exposing (KeyInput)
-import Physics exposing (..)
+import Physics
 
 -- MODEL
 
 type alias Rock =
-  { velocity : Vector2
-  , position : Vector2
+  { velocity : Physics.Vector2
+  , position : Physics.Vector2
   , size : Int
   }
 
@@ -27,7 +27,7 @@ initRock a b =
 updateRock : Float -> Rock -> Rock
 updateRock dt rock =
   { rock
-  | position = updatePosition True dt rock.velocity rock.position
+  | position = Physics.updatePosition True dt rock.velocity rock.position
   }
 
 -- VIEW

@@ -4,13 +4,13 @@ import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Ship exposing (Ship)
-import Physics exposing (..)
+import Physics
 
 -- MODEL
 
 type alias Bullet =
-  { velocity : Vector2
-  , position : Vector2
+  { velocity : Physics.Vector2
+  , position : Physics.Vector2
   , lifetime : Int
   }
 
@@ -23,7 +23,7 @@ initBullet ship =
   }
 
 
-firingVelocity : Float -> Vector2
+firingVelocity : Float -> Physics.Vector2
 firingVelocity facing =
   let
     bulletSpeed = 50
@@ -43,7 +43,7 @@ updateBullet dt bullet =
   in
   if stillAlive then
     Just { bullet
-    | position = updatePosition False dt bullet.velocity bullet.position
+    | position = Physics.updatePosition False dt bullet.velocity bullet.position
     , lifetime = aging
     }
   else

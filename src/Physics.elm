@@ -1,7 +1,6 @@
 module Physics where
 
 import Config exposing (halfWidth, halfHeight)
-import Random exposing (..)
 
 -- MODEL
 
