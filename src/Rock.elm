@@ -6,6 +6,7 @@ import Graphics.Element exposing (..)
 import Config exposing (KeyInput)
 import Physics
 
+
 -- MODEL
 
 type alias Rock =
@@ -16,13 +17,14 @@ type alias Rock =
   }
 
 
-initRock : Float -> Float -> Rock
-initRock a b =
-  { velocity = { x = b / 10, y = a / 10 }
-  , position = { x = a, y = b }
-  , size = 3
+initRock : Int -> Physics.Vector2 -> Physics.Vector2 -> Rock
+initRock size velocity position =
+  { velocity = velocity
+  , position = position
+  , size = size
   , radius = 25
   }
+
 
 -- UPDATE
 
@@ -32,6 +34,17 @@ updateRock dt rock =
   | position = Physics.updatePosition
     True dt rock.velocity rock.position
   }
+
+
+splitRock : Bool -> Rock -> List Rock
+splitRock damage rock =
+  if damage then
+    [ initRock (rock.size - 1) rock.velocity rock.position
+    , initRock (rock.size - 1) rock.velocity rock.position
+    ]
+  else
+    [ rock ]
+
 
 -- VIEW
 

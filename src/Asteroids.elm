@@ -22,9 +22,22 @@ type alias Game =
 
 initGame : Game
 initGame =
+  let
+    rockPositions =
+      ( { x = 50, y = 45 }
+      , { x = -134, y = 208 }
+      )
+    rockVelocities =
+      ( { x = 4, y = -9 }
+      , { x = -13, y = 8 }
+      )
+  in
   { ship = initShip
   , bullets = []
-  , rocks = [(initRock 50 32), (initRock -134 200)]
+  , rocks =
+    [ initRock 3 (fst rockVelocities) (fst rockPositions)
+    , initRock 3 (snd rockVelocities) (snd rockPositions)
+    ]
   }
 
 -- UPDATE
