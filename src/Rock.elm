@@ -3,8 +3,9 @@ module Rock where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Config exposing (KeyInput)
+import Config exposing (..)
 import Physics exposing (..)
+import Random exposing (Seed)
 
 -- MODEL
 
@@ -15,10 +16,13 @@ type alias Rock =
   }
 
 
-initRock : Rock
-initRock =
+initRock : VectorRandomizer -> Rock
+initRock randomizer =
+  let
+    randPosition = randomVector halfHeight halfWidth randomizer
+  in
   { velocity = { x = 5, y = 5 }
-  , position = randomPosition
+  , position = randPosition.value
   , size = 3
   }
 

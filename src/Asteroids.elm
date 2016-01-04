@@ -6,6 +6,7 @@ import Graphics.Element exposing (..)
 import Time exposing (..)
 import Keyboard
 import Text exposing (..)
+import Physics exposing (..)
 import Config exposing (..)
 import Ship exposing (..)
 import Bullet exposing (..)
@@ -22,9 +23,12 @@ type alias Game =
 
 initGame : Game
 initGame =
+  let
+    rand = initVectorRandomizer
+  in
   { ship = initShip
   , bullets = []
-  , rocks = [initRock]
+  , rocks = [(initRock rand), (initRock rand)]
   }
 
 -- UPDATE
@@ -89,5 +93,5 @@ inputSignal =
 
 main : Signal Element
 main =
-  Signal.map view gameState
-  --Signal.map show gameState
+  --Signal.map view gameState
+  Signal.map show gameState
