@@ -15,11 +15,6 @@ type alias Bullet =
   }
 
 
-type ExpirableBullet
-  = LiveBullet Bullet
-  | DeadBullet
-
-
 initBullet : Ship -> Bullet
 initBullet ship =
   { velocity = firingVelocity ship.facing
