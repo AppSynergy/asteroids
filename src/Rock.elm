@@ -28,8 +28,16 @@ initRock size velocity position =
 
 -- UPDATE
 
-updateRock : Float -> Rock -> Rock
+updateRock : Float -> Rock -> List Rock
 updateRock dt rock =
+  let
+    newRock = splitRock False rock
+  in
+  List.map (updateRock' dt) newRock
+
+
+updateRock' : Float -> Rock -> Rock
+updateRock' dt rock =
   { rock
   | position = Physics.updatePosition
     True dt rock.velocity rock.position
