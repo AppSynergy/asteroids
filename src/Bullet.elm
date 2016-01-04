@@ -13,25 +13,31 @@ type alias Bullet =
   { velocity : Physics.Vector2
   , position : Physics.Vector2
   , lifetime : Int
+  , radius: Float
+  , speed : Float
   }
 
 
 initBullet : Ship -> Bullet
 initBullet ship =
-  { velocity = firingVelocity ship.facing
+  let
+    speed = 50
+  in
+  { velocity = firingVelocity ship.facing speed
   , position = ship.position
   , lifetime = 50
+  , radius = 5
+  , speed = speed
   }
 
 
-firingVelocity : Float -> Physics.Vector2
-firingVelocity facing =
+firingVelocity : Float -> Float -> Physics.Vector2
+firingVelocity facing speed =
   let
-    bulletSpeed = 50
     facing' = degrees facing
   in
-  { y = bulletSpeed * cos facing'
-  , x = bulletSpeed * negate (sin facing')
+  { y = speed * cos facing'
+  , x = speed * negate (sin facing')
   }
 
 -- UPDATE
@@ -54,10 +60,10 @@ updateBullet dt targets bullet =
     Nothing
 
 
-detectCollisions : List Rock -> Bullet -> Bool
-detectCollisions rocks bullet =
+detectCollisions : List (Physics.Collidable a) -> Bullet -> Bool
+detectCollisions targets bullet =
   let
-    collisions = List.map (Physics.collides bullet) rocks
+    collisions = List.map (Physics.collides bullet) targets
   in
   List.foldr (||) False collisions
 
@@ -65,6 +71,6 @@ detectCollisions rocks bullet =
 
 drawBullet : Bullet -> Form
 drawBullet bullet =
-  circle 5
+  circle bullet.radius
     |> filled lightRed
     |> move (bullet.position.x, bullet.position.y)
