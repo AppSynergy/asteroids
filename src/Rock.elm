@@ -17,7 +17,7 @@ type alias Rock =
 
 initRock : Float -> Float -> Rock
 initRock a b =
-  { velocity = { x = 5, y = 5 }
+  { velocity = { x = b / 10, y = a / 10 }
   , position = { x = a, y = b }
   , size = 3
   }
