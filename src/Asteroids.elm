@@ -6,16 +6,17 @@ import Graphics.Element exposing (..)
 import Time exposing (..)
 import Keyboard
 import Text exposing (..)
+import Config exposing (..)
 import Ship exposing (..)
 import Bullet exposing (..)
-import Config exposing (..)
-
+import Rock exposing (..)
 
 -- MODEL
 
 type alias Game =
   { ship : Ship
   , bullets: List Bullet
+  , rocks : List Rock
   }
 
 
@@ -23,6 +24,7 @@ initGame : Game
 initGame =
   { ship = initShip
   , bullets = []
+  , rocks = [initRock]
   }
 
 -- UPDATE
@@ -38,6 +40,7 @@ update (dt, keyInput, fireInput) game =
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
   , bullets = List.filterMap (updateBullet dt) activeBullets
+  , rocks = List.map (updateRock dt) game.rocks
   }
 
 -- VIEW
@@ -49,10 +52,12 @@ view game =
       |> filled lightBlue
     theShip = drawShip game.ship
     activeBullets = List.map drawBullet game.bullets
+    activeRocks = List.map drawRock game.rocks
     allForms = List.concat
       [ [ background, theShip ]
       , activeBullets
-      , [ viewGameState game ]
+      , activeRocks
+      --, [ viewGameState game ]
       ]
   in
   container gameWidth gameHeight middle <|
