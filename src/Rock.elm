@@ -12,6 +12,7 @@ type alias Rock =
   { velocity : Physics.Vector2
   , position : Physics.Vector2
   , size : Int
+  , radius : Float
   }
 
 
@@ -20,6 +21,7 @@ initRock a b =
   { velocity = { x = b / 10, y = a / 10 }
   , position = { x = a, y = b }
   , size = 3
+  , radius = 25
   }
 
 -- UPDATE
@@ -35,6 +37,6 @@ updateRock dt rock =
 
 drawRock : Rock -> Form
 drawRock rock =
-  circle 20
+  circle rock.radius
     |> filled blue
     |> move (rock.position.x, rock.position.y)
