@@ -49,8 +49,9 @@ update (dt, keyInput, fireInput) game =
       (initBullet game.ship) :: game.bullets
     else
       game.bullets
+    applyToBullets = updateBullet dt game.rocks
     updatedBullets = List.filterMap
-      (updateBullet dt game.rocks) activeBullets
+      applyToBullets activeBullets
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship

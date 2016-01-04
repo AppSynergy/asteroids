@@ -44,7 +44,7 @@ firingVelocity facing speed =
 
 -- UPDATE
 
-updateBullet : Float -> List Rock -> Bullet
+updateBullet : Float -> List (Physics.Collidable a) -> Bullet
   -> Maybe Bullet
 updateBullet dt targets bullet =
   let
