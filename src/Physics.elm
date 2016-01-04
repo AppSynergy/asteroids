@@ -3,34 +3,14 @@ module Physics where
 import Config exposing (halfWidth, halfHeight)
 import Random exposing (..)
 
+-- MODEL
+
 type alias Vector2 =
   { x : Float
   , y : Float
   }
 
-
-positionSeed : Seed
-positionSeed = Random.initialSeed 46756
-
-
-randomY : Generator Float
-randomY =
-  Random.float (negate halfHeight) halfHeight
-
-
-randomX : Generator Float
-randomX =
-  Random.float (negate halfWidth) halfWidth
-
-
-randomPosition :  Vector2
-randomPosition =
-  let
-    rY = Random.generate randomY positionSeed
-    rX = Random.generate randomX positionSeed
-  in
-    { x = (fst rX), y = (fst rY) }
-
+-- UPDATE
 
 updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
 updatePosition isWrappable dt velocity position =

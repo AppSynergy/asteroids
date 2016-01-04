@@ -15,10 +15,10 @@ type alias Rock =
   }
 
 
-initRock : Rock
-initRock =
+initRock : Float -> Float -> Rock
+initRock a b =
   { velocity = { x = 5, y = 5 }
-  , position = randomPosition
+  , position = { x = a, y = b }
   , size = 3
   }
 

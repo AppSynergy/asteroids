@@ -24,7 +24,7 @@ initGame : Game
 initGame =
   { ship = initShip
   , bullets = []
-  , rocks = [initRock]
+  , rocks = [(initRock 50 32), (initRock -134 200)]
   }
 
 -- UPDATE
