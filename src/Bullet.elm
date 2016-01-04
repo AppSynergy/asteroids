@@ -40,10 +40,12 @@ updateBullet dt bullet =
   let
     stillAlive = bullet.lifetime > 0
     aging = if stillAlive then bullet.lifetime - 1 else 0
+    newPosition = Physics.updatePosition
+      False dt bullet.velocity bullet.position
   in
   if stillAlive then
     Just { bullet
-    | position = Physics.updatePosition False dt bullet.velocity bullet.position
+    | position = newPosition
     , lifetime = aging
     }
   else

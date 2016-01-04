@@ -27,7 +27,8 @@ initRock a b =
 updateRock : Float -> Rock -> Rock
 updateRock dt rock =
   { rock
-  | position = Physics.updatePosition True dt rock.velocity rock.position
+  | position = Physics.updatePosition
+    True dt rock.velocity rock.position
   }
 
 -- VIEW
