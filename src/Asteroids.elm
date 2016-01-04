@@ -38,7 +38,7 @@ update (dt, keyInput, fireInput) game =
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = List.map (updateBullet dt) activeBullets
+  , bullets = List.filterMap (updateBullet dt) activeBullets
   }
 
 -- VIEW

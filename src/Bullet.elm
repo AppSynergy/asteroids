@@ -40,18 +40,19 @@ firingVelocity facing =
 
 -- UPDATE
 
-
-
-updateBullet : Float -> Bullet -> Bullet
+updateBullet : Float -> Bullet -> Maybe Bullet
 updateBullet dt bullet =
   let
     stillAlive = bullet.lifetime > 0
     aging = if stillAlive then bullet.lifetime - 1 else 0
   in
-  { bullet
-  | position = updatePosition False dt bullet.velocity bullet.position
-  , lifetime = aging
-  }
+  if stillAlive then
+    Just { bullet
+    | position = updatePosition False dt bullet.velocity bullet.position
+    , lifetime = aging
+    }
+  else
+    Nothing
 
 -- VIEW
 
