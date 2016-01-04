@@ -11,13 +11,20 @@ import Physics exposing (..)
 type alias Bullet =
   { velocity : Vector2
   , position : Vector2
+  , lifetime : Int
   }
+
+
+type ExpirableBullet
+  = LiveBullet Bullet
+  | DeadBullet
 
 
 initBullet : Ship -> Bullet
 initBullet ship =
   { velocity = firingVelocity ship.facing
   , position = ship.position
+  , lifetime = 50
   }
 
 
@@ -33,10 +40,17 @@ firingVelocity facing =
 
 -- UPDATE
 
+
+
 updateBullet : Float -> Bullet -> Bullet
 updateBullet dt bullet =
+  let
+    stillAlive = bullet.lifetime > 0
+    aging = if stillAlive then bullet.lifetime - 1 else 0
+  in
   { bullet
   | position = updatePosition False dt bullet.velocity bullet.position
+  , lifetime = aging
   }
 
 -- VIEW
