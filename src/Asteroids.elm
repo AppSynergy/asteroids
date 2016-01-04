@@ -49,12 +49,14 @@ update (dt, keyInput, fireInput) game =
       (initBullet game.ship) :: game.bullets
     else
       game.bullets
+    updatedBullets = List.filterMap
+      (updateBullet dt game.rocks) activeBullets
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = List.filterMap
-    (updateBullet dt game.rocks) activeBullets
-  , rocks = List.concat (List.map (updateRock dt) game.rocks)
+  , bullets = updatedBullets
+  , rocks = List.map (updateRock dt False) game.rocks
+    |> List.concat
   }
 
 -- VIEW

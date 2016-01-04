@@ -28,10 +28,10 @@ initRock size velocity position =
 
 -- UPDATE
 
-updateRock : Float -> Rock -> List Rock
-updateRock dt rock =
+updateRock : Float -> Bool -> Rock -> List Rock
+updateRock dt damage rock =
   let
-    newRock = splitRock False rock
+    newRock = splitRock damage rock
   in
   List.map (updateRock' dt) newRock
 
