@@ -52,10 +52,11 @@ updateBullet dt targets bullet =
     aging = if stillAlive then bullet.lifetime - 1 else 0
     newPosition = Physics.updatePosition
       False dt bullet.velocity bullet.position
-    (hitHappened, hitWho) = detectCollisions targets bullet
-    dbg = Debug.watch "hit" hitWho
+    hits = detectCollisions targets bullet
+    hitSomething = List.any (\n -> n.result == True) hits
+    dbg = Debug.watch "hit" hitSomething
   in
-  if stillAlive && not hitHappened then
+  if stillAlive && not hitSomething then
     Just { bullet
     | position = newPosition
     , lifetime = aging
@@ -65,15 +66,9 @@ updateBullet dt targets bullet =
 
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
-  -> (Bool, Maybe (Physics.Collidable a))
+  -> List (Physics.CollisionResult a)
 detectCollisions targets bullet =
-  let
-    collisions = List.map (Physics.collides bullet) targets
-    hitBools = List.foldr (||) False
-      (List.map (fst) collisions)
-    hitObjects = (List.map (snd) collisions)
-  in
-   (hitBools, firstNonEmpty hitObjects)
+  List.map (Physics.collides bullet) targets
 
 
 firstNonEmpty : List (Maybe a) -> Maybe a

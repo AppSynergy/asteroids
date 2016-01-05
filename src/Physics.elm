@@ -16,6 +16,11 @@ type alias Collidable a =
   , radius: Float
   }
 
+type alias CollisionResult a =
+  { result : Bool
+  , object : Maybe (Collidable a)
+  }
+
 -- UPDATE
 
 near : Float -> Float -> Float -> Bool
@@ -23,18 +28,17 @@ near k c n =
   n >= k - c && n <= k + c
 
 
-collides : Collidable a -> Collidable b
-  -> (Bool, Maybe (Collidable b))
+collides : Collidable a -> Collidable b -> CollisionResult b
 collides obj1 obj2 =
   let
     check = near obj1.position.x obj2.radius obj2.position.x
       && near obj1.position.y obj2.radius obj2.position.y
-    hitObject = if check then
+    hit = if check then
       Just obj2
     else
       Nothing
   in
-    (check, hitObject)
+    { result = check, object = hit }
 
 
 updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
