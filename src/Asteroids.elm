@@ -51,72 +51,28 @@ update (dt, keyInput, fireInput) game =
       (initBullet game.ship) :: game.bullets
     else
       game.bullets
+
+    collisionTests = List.map
+      (detectCollisions game.rocks) activeBullets
+
     newBullets = List.filterMap
       (updateBullet dt) activeBullets
-    newRocks = List.map (updateRock dt False) game.rocks
+    newBullets' = removeDeadBullets
+      (onTargetBullets collisionTests) newBullets
+
+    newRocks' = List.map (updateRock dt False) game.rocks
       |> List.concat
-    game' = updateCollisions game newRocks newBullets
-  in
-  { game'
-  | ship = updateShip (dt, keyInput, fireInput) game.ship
-  }
-
-
-updateCollisions : Game -> List Rock -> List Bullet -> Game
-updateCollisions game rocks bullets =
-  let
-    rockHits = detectCollisions rocks
-    collisionTests = List.map rockHits bullets
-    newBullets = removeDeadBullets
-      (onTargetBullets collisionTests) bullets
-    newRocks = handleHitRocks collisionTests rocks
   in
   { game
-  | bullets = newBullets
-  , rocks = newRocks
+  | ship = updateShip (dt, keyInput, fireInput) game.ship
+  , bullets = newBullets'
+  , rocks = newRocks'
   }
 
 
-handleHitRocks : List (List (Physics.CollisionResult Rock))
-  -> List Rock -> List Rock
-handleHitRocks collisions rocks =
-  let
-    x = hitRocks collisions
-    dbg = Debug.watch "x" x
-    y = rockDebugger x
-  in
-  rocks
-
-rockDebugger x =
-  let
-    r = List.filter (\a -> a /= Nothing) x
-    dbg = Debug.watch "r" r
-    r' = case (List.head r) of
-      Nothing ->
-        ".."
-      Just a ->
-        case a of
-          Nothing ->
-            ".."
-          Just b ->
-            toString b.color
-    dbg2 = Debug.watch "rocks" r'
-  in
-  r'
-
-
-hitRocks : List (List (Physics.CollisionResult a))
-  ->  List (Maybe (Physics.Collidable a))
-hitRocks cols =
-  let
-    hitWhat = List.map (\n -> n.object)
-  in
-  List.map firstNonEmpty (List.map hitWhat cols)
-
-
-firstNonEmpty : List (Maybe a) -> Maybe a
-firstNonEmpty list =
-  List.head (List.filterMap identity list)
+damagedRocks : List (List (Physics.CollisionResult Rock)) -> List Bool
+damagedRocks collisionTests =
+  [False, True]
 
 
 removeDeadBullets : List Bool -> List Bullet -> List Bullet
