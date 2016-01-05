@@ -11,6 +11,7 @@ import Ship exposing (..)
 import Bullet exposing (..)
 import Rock exposing (..)
 
+
 -- MODEL
 
 type alias Game =
@@ -40,6 +41,7 @@ initGame =
     ]
   }
 
+
 -- UPDATE
 
 update : (Float, KeyInput, Bool) -> Game -> Game
@@ -49,9 +51,8 @@ update (dt, keyInput, fireInput) game =
       (initBullet game.ship) :: game.bullets
     else
       game.bullets
-    applyToBullets = updateBullet dt game.rocks
-    updatedBullets = List.filterMap
-      applyToBullets activeBullets
+    bfunc = updateBullet dt game.rocks
+    updatedBullets = List.filterMap bfunc activeBullets
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
@@ -59,6 +60,7 @@ update (dt, keyInput, fireInput) game =
   , rocks = List.map (updateRock dt False) game.rocks
     |> List.concat
   }
+
 
 -- VIEW
 
