@@ -57,7 +57,7 @@ update (dt, keyInput, fireInput) game =
       |> removeDeadBullets (onTargetBullets collisionTests)
 
     newRocks = game.rocks
-      |> List.map (updateRock dt False)
+      |> List.map2 (updateRock dt) (damagedRocks collisionTests)
       |> List.concat
   in
   { game
@@ -75,7 +75,7 @@ fireNewBullet ship bullets =
     bullets
 
 
-damagedRocks : List (List (Physics.CollisionResult Rock)) -> List Bool
+damagedRocks : List (List (Physics.CollisionResult a)) -> List Bool
 damagedRocks collisionTests =
   [False, True]
 
@@ -111,12 +111,10 @@ view game =
     background = rect gameWidth gameHeight
       |> filled lightBlue
     theShip = drawShip game.ship
-    activeBullets = List.map drawBullet game.bullets
-    activeRocks = List.map drawRock game.rocks
     allForms = List.concat
       [ [ background, theShip ]
-      , activeBullets
-      , activeRocks
+      , List.map drawBullet game.bullets
+      , List.map drawRock game.rocks
       --, [ viewGameState game ]
       ]
   in
