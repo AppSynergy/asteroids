@@ -36,8 +36,8 @@ initGame =
   { ship = initShip
   , bullets = []
   , rocks =
-    [ initRock 3 (fst rockVelocities) (fst rockPositions)
-    , initRock 3 (snd rockVelocities) (snd rockPositions)
+    [ initRock 3 25 (fst rockVelocities) (fst rockPositions)
+    , initRock 3 9 (snd rockVelocities) (snd rockPositions)
     ]
   }
 

@@ -15,16 +15,20 @@ type alias Rock =
   , size : Int
   , radius : Float
   , color : Color
+  , facing : Float
+  , spinRate : Float
   }
 
 
-initRock : Int -> Physics.Vector2 -> Physics.Vector2 -> Rock
-initRock size velocity position =
+initRock : Int -> Float -> Physics.Vector2 -> Physics.Vector2 -> Rock
+initRock size spin velocity position =
   { velocity = velocity
   , position = position
   , size = size
   , radius = toFloat (8 * size)
   , color = black
+  , facing = 0
+  , spinRate = spin
   }
 
 
@@ -40,17 +44,25 @@ updateRock dt damage rock =
 
 updateRock' : Float -> Rock -> Rock
 updateRock' dt rock =
-  { rock
+  let
+    spinningRock = updateFacing dt rock
+  in
+  { spinningRock
   | position = Physics.updatePosition
     True dt rock.velocity rock.position
   }
 
+updateFacing : Float -> Rock -> Rock
+updateFacing dt rock =
+  { rock
+  | facing = rock.facing + (dt / 10)
+  }
 
 splitRock : Bool -> Rock -> List Rock
 splitRock damage rock =
   if damage then
-    [ initRock (rock.size - 1) rock.velocity rock.position
-    , initRock (rock.size - 1) rock.velocity rock.position
+    [ initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
+    , initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
     ]
   else
     [ rock ]
@@ -74,4 +86,5 @@ drawRock rock =
       |> move (-7 , -7)
   in
   group [body, spot1, spot2, spot3]
+    |> rotate (degrees rock.facing)
     |> move (rock.position.x, rock.position.y)
