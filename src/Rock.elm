@@ -52,20 +52,28 @@ updateRock' dt rock =
     True dt rock.velocity rock.position
   }
 
+
 updateFacing : Float -> Rock -> Rock
 updateFacing dt rock =
   { rock
   | facing = rock.facing + (dt / 10)
   }
 
+
 splitRock : Bool -> Rock -> List Rock
 splitRock damage rock =
+  if damage && rock.size == 1 then [] else
   if damage then
     [ initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
     , initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
     ]
   else
     [ rock ]
+
+
+changeColor : Rock -> Rock
+changeColor rock =
+  { rock | color = blue }
 
 
 -- VIEW
@@ -77,13 +85,13 @@ drawRock rock =
       |> filled rock.color
     spot1 = circle (rock.radius / 5)
       |> filled darkRed
-      |> move (8 , 11)
-    spot2 = circle (rock.radius / 5)
+      |> move (rock.radius / 3 , rock.radius / 2)
+    spot2 = circle (rock.radius / 4)
       |> filled darkRed
-      |> move (14 , -3)
-    spot3 = circle (rock.radius / 5)
+      |> move (rock.radius / -2 , rock.radius / 3.5)
+    spot3 = circle (rock.radius / 7)
       |> filled darkRed
-      |> move (-7 , -7)
+      |> move (rock.radius / -3 , rock.radius / -1.6)
   in
   group [body, spot1, spot2, spot3]
     |> rotate (degrees rock.facing)

@@ -53,24 +53,23 @@ update (dt, keyInput, fireInput) game =
       game.bullets
     newBullets = List.filterMap
       (updateBullet dt) activeBullets
-    game' = updateCollisions game newBullets
+    newRocks = List.map (updateRock dt False) game.rocks
+      |> List.concat
+    game' = updateCollisions game newRocks newBullets
   in
   { game'
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = game'.bullets
-  , rocks = List.map (updateRock dt False) game.rocks
-    |> List.concat
   }
 
 
-updateCollisions : Game -> List Bullet -> Game
-updateCollisions game bullets =
+updateCollisions : Game -> List Rock -> List Bullet -> Game
+updateCollisions game rocks bullets =
   let
-    rockHits = detectCollisions game.rocks
+    rockHits = detectCollisions rocks
     collisionTests = List.map rockHits bullets
     newBullets = removeDeadBullets
       (onTargetBullets collisionTests) bullets
-    newRocks = handleHitRocks collisionTests game.rocks
+    newRocks = handleHitRocks collisionTests rocks
   in
   { game
   | bullets = newBullets
@@ -83,7 +82,15 @@ handleHitRocks : List (List (Physics.CollisionResult Rock))
 handleHitRocks collisions rocks =
   let
     x = hitRocks collisions
+    dbg = Debug.watch "x" x
+    y = rockDebugger x
+  in
+  rocks
+
+rockDebugger x =
+  let
     r = List.filter (\a -> a /= Nothing) x
+    dbg = Debug.watch "r" r
     r' = case (List.head r) of
       Nothing ->
         ".."
@@ -95,7 +102,7 @@ handleHitRocks collisions rocks =
             toString b.color
     dbg2 = Debug.watch "rocks" r'
   in
-  rocks
+  r'
 
 
 hitRocks : List (List (Physics.CollisionResult a))
