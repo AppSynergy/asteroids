@@ -47,32 +47,45 @@ initGame =
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
-    activeBullets = if game.ship.firing then
-      (initBullet game.ship) :: game.bullets
-    else
-      game.bullets
+    bullets = fireNewBullet game.ship game.bullets
 
     collisionTests = List.map
-      (detectCollisions game.rocks) activeBullets
+      (detectCollisions game.rocks) bullets
 
-    newBullets = List.filterMap
-      (updateBullet dt) activeBullets
-    newBullets' = removeDeadBullets
-      (onTargetBullets collisionTests) newBullets
+    newBullets = bullets
+      |> List.filterMap (updateBullet dt)
+      |> removeDeadBullets (onTargetBullets collisionTests)
 
-    newRocks' = List.map (updateRock dt False) game.rocks
+    newRocks = game.rocks
+      |> List.map (updateRock dt False)
       |> List.concat
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = newBullets'
-  , rocks = newRocks'
+  , bullets = newBullets
+  , rocks = newRocks
   }
+
+
+fireNewBullet : Ship -> List Bullet -> List Bullet
+fireNewBullet ship bullets =
+  if ship.firing then
+    (initBullet ship) :: bullets
+  else
+    bullets
 
 
 damagedRocks : List (List (Physics.CollisionResult Rock)) -> List Bool
 damagedRocks collisionTests =
   [False, True]
+
+
+onTargetBullets : List (List (Physics.CollisionResult a)) -> List Bool
+onTargetBullets collisionTests =
+  let
+    hitAnyTarget = List.any (\n -> n.result == True)
+  in
+  List.map hitAnyTarget collisionTests
 
 
 removeDeadBullets : List Bool -> List Bullet -> List Bullet
@@ -82,14 +95,6 @@ removeDeadBullets hits bullets =
     rmv a = if (fst a) then Nothing else Just (snd a)
   in
   List.filterMap rmv zipped
-
-
-onTargetBullets : List (List (Physics.CollisionResult a)) -> List Bool
-onTargetBullets collisionTests =
-  let
-    hitAnyTarget = List.any (\n -> n.result == True)
-  in
-  List.map hitAnyTarget collisionTests
 
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
