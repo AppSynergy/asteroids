@@ -11,6 +11,8 @@ import Ship exposing (..)
 import Bullet exposing (..)
 import Rock exposing (..)
 import Physics
+import List.Extra exposing (transpose)
+
 
 -- MODEL
 
@@ -49,8 +51,6 @@ update (dt, keyInput, fireInput) game =
   let
     bullets = fireNewBullet game.ship game.bullets
 
-    d1 = Debug.watch "rocks1" game.rocks
-
     collisionTests = List.map
       (detectCollisions game.rocks) bullets
 
@@ -59,10 +59,9 @@ update (dt, keyInput, fireInput) game =
       |> removeDeadBullets (onTargetBullets collisionTests)
 
     newRocks = game.rocks
-      |> List.map2 (updateRock dt) (damagedRocks collisionTests)
+      |> List.map2 (updateRock dt)
+        (damagedRocks (List.length game.rocks) collisionTests)
       |> List.concat
-
-    d2 = Debug.watch "rocks2" newRocks
   in
   { game
   | ship = updateShip (dt, keyInput, fireInput) game.ship
@@ -78,6 +77,7 @@ fireNewBullet ship bullets =
   else
     bullets
 
+
 hitAnyTarget : List (Physics.CollisionResult a) -> Bool
 hitAnyTarget =
   List.any (\n -> n.result == True)
@@ -88,25 +88,14 @@ onTargetBullets collisionTests =
   List.map hitAnyTarget collisionTests
 
 
-damagedRocks : List (List (Physics.CollisionResult a)) -> List Bool
-damagedRocks collisionTests =
+damagedRocks : Int -> List (List (Physics.CollisionResult a)) -> List Bool
+damagedRocks rockCount collisionTests =
   let
     ct = List.map hitAnyTarget (transpose collisionTests)
   in
-  if List.length ct < 1 then [False, False] else ct
-
-
-transpose : List (List a) -> List (List a)
-transpose ll =
-  case ll of
-    [] -> []
-    ([]::xss) -> transpose xss
-    ((x::xs)::xss) ->
-      let
-        heads = List.filterMap List.head xss
-        tails = List.filterMap List.tail xss
-      in
-        (x::heads)::transpose (xs::tails)
+  if List.length ct < 1 then
+    List.repeat rockCount False
+  else ct
 
 
 removeDeadBullets : List Bool -> List Bullet -> List Bullet

@@ -62,18 +62,31 @@ updateFacing dt rock =
 
 splitRock : Bool -> Rock -> List Rock
 splitRock damage rock =
-  if damage && rock.size == 1 then [] else
-  if damage then
-    [ initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
-    , initRock (rock.size - 1) rock.spinRate rock.velocity rock.position
+  let
+    (v1,v2) = scatterVelocities rock.velocity
+  in
+  if damage && rock.size == 1 then []
+  else if damage then
+    [ initRock (rock.size - 1) rock.spinRate v1 rock.position
+    , initRock (rock.size - 1) rock.spinRate v2 rock.position
     ]
   else
     [ rock ]
 
 
-changeColor : Rock -> Rock
-changeColor rock =
-  { rock | color = blue }
+scatterVelocities : Physics.Vector2 -> (Physics.Vector2, Physics.Vector2)
+scatterVelocities velocity =
+  let
+    angle1 = degrees 30
+    angle2 = negate angle1
+  in
+  ( { x = velocity.x * cos angle1
+    , y = velocity.y * negate (sin angle1)
+    }
+  , { x = velocity.x * cos angle2
+    , y = velocity.y * negate (sin angle2)
+    }
+  )
 
 
 -- VIEW
