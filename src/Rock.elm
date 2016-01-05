@@ -3,7 +3,8 @@ module Rock where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Config exposing (KeyInput)
+import List.Extra exposing (transpose)
+
 import Physics
 
 
@@ -20,8 +21,8 @@ type alias Rock =
   }
 
 
-initRock : Int -> Float -> Physics.Vector2 -> Physics.Vector2 -> Rock
-initRock size spin velocity position =
+init : Int -> Float -> Physics.Vector2 -> Physics.Vector2 -> Rock
+init size spin velocity position =
   { velocity = velocity
   , position = position
   , size = size
@@ -34,16 +35,16 @@ initRock size spin velocity position =
 
 -- UPDATE
 
-updateRock : Float -> Bool -> Rock -> List Rock
-updateRock dt damage rock =
+update : Float -> Bool -> Rock -> List Rock
+update dt damage rock =
   let
-    newRock = splitRock damage rock
+    newRock = split damage rock
   in
-  List.map (updateRock' dt) newRock
+  List.map (update' dt) newRock
 
 
-updateRock' : Float -> Rock -> Rock
-updateRock' dt rock =
+update' : Float -> Rock -> Rock
+update' dt rock =
   let
     spinningRock = updateFacing dt rock
   in
@@ -60,15 +61,25 @@ updateFacing dt rock =
   }
 
 
-splitRock : Bool -> Rock -> List Rock
-splitRock damage rock =
+damaged : Int -> List (List (Physics.CollisionResult a)) -> List Bool
+damaged rockCount collisionTests =
+  let
+    ct = List.map Physics.hitAny (transpose collisionTests)
+  in
+  if List.length ct < 1 then
+    List.repeat rockCount False
+  else ct
+
+
+split : Bool -> Rock -> List Rock
+split damage rock =
   let
     (v1,v2) = scatterVelocities rock.velocity
   in
   if damage && rock.size == 1 then []
   else if damage then
-    [ initRock (rock.size - 1) rock.spinRate v1 rock.position
-    , initRock (rock.size - 1) rock.spinRate v2 rock.position
+    [ init (rock.size - 1) rock.spinRate v1 rock.position
+    , init (rock.size - 1) rock.spinRate v2 rock.position
     ]
   else
     [ rock ]
@@ -91,8 +102,8 @@ scatterVelocities velocity =
 
 -- VIEW
 
-drawRock : Rock -> Form
-drawRock rock =
+draw : Rock -> Form
+draw rock =
   let
     body = circle rock.radius
       |> filled rock.color

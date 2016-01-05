@@ -3,8 +3,8 @@ module Bullet where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
+
 import Ship exposing (Ship)
-import Rock exposing (Rock)
 import Physics
 
 
@@ -19,8 +19,8 @@ type alias Bullet =
   }
 
 
-initBullet : Ship -> Bullet
-initBullet ship =
+init : Ship -> Bullet
+init ship =
   let
     speed = 50
   in
@@ -44,9 +44,8 @@ firingVelocity facing speed =
 
 -- UPDATE
 
-updateBullet : Float -> Bullet
-  -> Maybe Bullet
-updateBullet dt bullet =
+update : Float -> Bullet -> Maybe Bullet
+update dt bullet =
   let
     stillAlive = bullet.lifetime > 0
     aging = if stillAlive then bullet.lifetime - 1 else 0
@@ -62,10 +61,32 @@ updateBullet dt bullet =
     Nothing
 
 
+fire : Ship -> List Bullet -> List Bullet
+fire ship bullets =
+  if ship.firing then
+    (init ship) :: bullets
+  else
+    bullets
+
+
+removeDead : List Bool -> List Bullet -> List Bullet
+removeDead hits bullets =
+  let
+    zipped = List.map2 (,) hits bullets
+    rmv a = if (fst a) then Nothing else Just (snd a)
+  in
+  List.filterMap rmv zipped
+
+
+onTarget : List (List (Physics.CollisionResult a)) -> List Bool
+onTarget collisionTests =
+  List.map Physics.hitAny collisionTests
+
+
 -- VIEW
 
-drawBullet : Bullet -> Form
-drawBullet bullet =
+draw : Bullet -> Form
+draw bullet =
   circle bullet.radius
     |> filled lightRed
     |> move (bullet.position.x, bullet.position.y)

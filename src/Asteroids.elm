@@ -4,14 +4,12 @@ import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Time exposing (..)
-import Keyboard
-import Text exposing (..)
-import Config exposing (..)
-import Ship exposing (..)
-import Bullet exposing (..)
-import Rock exposing (..)
+
+import UI exposing (gameWidth, gameHeight, KeyInput, ui)
+import Ship exposing (Ship)
+import Bullet exposing (Bullet)
+import Rock exposing (Rock)
 import Physics
-import List.Extra exposing (transpose)
 
 
 -- MODEL
@@ -35,11 +33,11 @@ initGame =
       , { x = -13, y = 8 }
       )
   in
-  { ship = initShip
+  { ship = Ship.init
   , bullets = []
   , rocks =
-    [ initRock 3 25 (fst rockVelocities) (fst rockPositions)
-    , initRock 3 9 (snd rockVelocities) (snd rockPositions)
+    [ Rock.init 3 25 (fst rockVelocities) (fst rockPositions)
+    , Rock.init 3 9 (snd rockVelocities) (snd rockPositions)
     ]
   }
 
@@ -49,62 +47,25 @@ initGame =
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
-    bullets = fireNewBullet game.ship game.bullets
+    bullets = Bullet.fire game.ship game.bullets
 
     collisionTests = List.map
       (detectCollisions game.rocks) bullets
 
     newBullets = bullets
-      |> List.filterMap (updateBullet dt)
-      |> removeDeadBullets (onTargetBullets collisionTests)
+      |> List.filterMap (Bullet.update dt)
+      |> Bullet.removeDead (Bullet.onTarget collisionTests)
 
     newRocks = game.rocks
-      |> List.map2 (updateRock dt)
-        (damagedRocks (List.length game.rocks) collisionTests)
+      |> List.map2 (Rock.update dt)
+        (Rock.damaged (List.length game.rocks) collisionTests)
       |> List.concat
   in
   { game
-  | ship = updateShip (dt, keyInput, fireInput) game.ship
+  | ship = Ship.update (dt, keyInput, fireInput) game.ship
   , bullets = newBullets
   , rocks = newRocks
   }
-
-
-fireNewBullet : Ship -> List Bullet -> List Bullet
-fireNewBullet ship bullets =
-  if ship.firing then
-    (initBullet ship) :: bullets
-  else
-    bullets
-
-
-hitAnyTarget : List (Physics.CollisionResult a) -> Bool
-hitAnyTarget =
-  List.any (\n -> n.result == True)
-
-
-onTargetBullets : List (List (Physics.CollisionResult a)) -> List Bool
-onTargetBullets collisionTests =
-  List.map hitAnyTarget collisionTests
-
-
-damagedRocks : Int -> List (List (Physics.CollisionResult a)) -> List Bool
-damagedRocks rockCount collisionTests =
-  let
-    ct = List.map hitAnyTarget (transpose collisionTests)
-  in
-  if List.length ct < 1 then
-    List.repeat rockCount False
-  else ct
-
-
-removeDeadBullets : List Bool -> List Bullet -> List Bullet
-removeDeadBullets hits bullets =
-  let
-    zipped = List.map2 (,) hits bullets
-    rmv a = if (fst a) then Nothing else Just (snd a)
-  in
-  List.filterMap rmv zipped
 
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
@@ -120,23 +81,14 @@ view game =
   let
     background = rect gameWidth gameHeight
       |> filled lightBlue
-    theShip = drawShip game.ship
     allForms = List.concat
-      [ [ background, theShip ]
-      , List.map drawBullet game.bullets
-      , List.map drawRock game.rocks
-      --, [ viewGameState game ]
+      [ [ background, Ship.draw game.ship ]
+      , List.map Bullet.draw game.bullets
+      , List.map Rock.draw game.rocks
       ]
   in
   container gameWidth gameHeight middle <|
     collage gameWidth gameHeight allForms
-
-
-viewGameState : Game -> Form
-viewGameState game =
-  show game
-    |> toForm
-    |> move (-halfWidth,0)
 
 
 -- SIGNALS
@@ -150,7 +102,7 @@ inputSignal : Signal (Float, KeyInput, Bool)
 inputSignal =
   let
     delta = fps 30
-    tuples = Signal.map3 (,,) delta Keyboard.arrows Keyboard.space
+    tuples = Signal.map3 (,,) delta ui.steering ui.firing
   in
   Signal.sampleOn delta tuples
 
@@ -158,4 +110,3 @@ inputSignal =
 main : Signal Element
 main =
   Signal.map view gameState
-  --Signal.map show gameState

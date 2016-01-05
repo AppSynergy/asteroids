@@ -3,8 +3,10 @@ module Ship where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Config exposing (KeyInput)
+
+import UI exposing (KeyInput)
 import Physics
+
 
 -- MODEL
 
@@ -23,8 +25,8 @@ type alias Ship =
   }
 
 
-initShip : Ship
-initShip =
+init : Ship
+init =
   { firing = False
   , velocity = { x = 0, y = 0 }
   , position = { x = 0, y = 0 }
@@ -40,12 +42,11 @@ initShip =
 
 -- UPDATE
 
-updateShip : (Float, KeyInput, Bool) -> Ship -> Ship
-updateShip (dt, keyInput, fireInput) ship =
+update : (Float, KeyInput, Bool) -> Ship -> Ship
+update (dt, keyInput, fireInput) ship =
   let
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
-    -- only up arrow (thruster) does anything
     thrust = if upDownInput > 0 then upDownInput else 0
   in
   ship
@@ -125,8 +126,8 @@ updateDrag ship =
 
 -- VIEW
 
-drawShip : Ship -> Form
-drawShip ship =
+draw : Ship -> Form
+draw ship =
   let
     triangle = ngon 3 32
       |> filled lightGreen

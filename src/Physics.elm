@@ -1,6 +1,6 @@
 module Physics where
 
-import Config exposing (halfWidth, halfHeight)
+import UI exposing (halfWidth, halfHeight)
 
 
 -- MODEL
@@ -17,12 +17,19 @@ type alias Collidable a =
   , radius : Float
   }
 
+
 type alias CollisionResult a =
   { result : Bool
   , object : Maybe (Collidable a)
   }
 
+
 -- UPDATE
+
+hitAny : List (CollisionResult a) -> Bool
+hitAny =
+  List.any (\n -> n.result == True)
+
 
 near : Float -> Float -> Float -> Bool
 near k c n =
