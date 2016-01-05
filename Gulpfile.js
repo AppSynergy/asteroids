@@ -11,7 +11,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('elm', ['elm-init'], function(){
-  return gulp.src('src/*.elm')
+  return gulp.src('src/Main.elm')
     .pipe(plumber())
     .pipe(elm())
     .pipe(uglify())

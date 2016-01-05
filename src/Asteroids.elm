@@ -68,8 +68,8 @@ updateCollisions game bullets =
   let
     rockHits = detectCollisions game.rocks
     collisionTests = List.map rockHits bullets
-    dbg = onTargetBullets collisionTests
-    newBullets = removeDeadBullets dbg bullets
+    newBullets = removeDeadBullets
+      (onTargetBullets collisionTests) bullets
     newRocks = game.rocks
   in
   { game
@@ -91,7 +91,7 @@ onTargetBullets collisionTests =
   let
     hitAnyTarget = List.any (\n -> n.result == True)
   in
-    List.map hitAnyTarget collisionTests
+  List.map hitAnyTarget collisionTests
 
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
