@@ -10,7 +10,7 @@ import Config exposing (..)
 import Ship exposing (..)
 import Bullet exposing (..)
 import Rock exposing (..)
-
+import Physics
 
 -- MODEL
 
@@ -51,15 +51,46 @@ update (dt, keyInput, fireInput) game =
       (initBullet game.ship) :: game.bullets
     else
       game.bullets
-    bfunc = updateBullet dt game.rocks
-    updatedBullets = List.filterMap bfunc activeBullets
+    newBullets = List.filterMap
+      (updateBullet dt) activeBullets
+    game' = updateCollisions game
   in
-  { game
+  { game'
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = updatedBullets
+  , bullets = newBullets
   , rocks = List.map (updateRock dt False) game.rocks
     |> List.concat
   }
+
+
+updateCollisions : Game -> Game
+updateCollisions game =
+  let
+    rockHits = detectCollisions game.rocks
+    collState = List.map rockHits game.bullets
+    dbg = bReduce collState
+
+    newBullets = game.bullets
+    newRocks = game.rocks
+  in
+  { game
+  | bullets = newBullets
+  , rocks = newRocks
+  }
+
+bReduce : List (List (Physics.CollisionResult a)) -> List Bool
+bReduce state =
+  let
+    bar = List.any (\n -> n.result == True)
+  in
+    List.map bar state
+
+
+
+detectCollisions : List (Physics.Collidable a) -> Bullet
+  -> List (Physics.CollisionResult a)
+detectCollisions targets bullet =
+  List.map (Physics.collides bullet) targets
 
 
 -- VIEW
@@ -76,7 +107,7 @@ view game =
       [ [ background, theShip ]
       , activeBullets
       , activeRocks
-      --, [ viewGameState game ]
+      , [ viewGameState game ]
       ]
   in
   container gameWidth gameHeight middle <|
