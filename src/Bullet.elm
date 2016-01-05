@@ -52,11 +52,8 @@ updateBullet dt bullet =
     aging = if stillAlive then bullet.lifetime - 1 else 0
     newPosition = Physics.updatePosition
       False dt bullet.velocity bullet.position
-    --hits = detectCollisions targets bullet
-    --hitSomething = List.any (\n -> n.result == True) hits
-    --doHits = recordHit hits
   in
-  if stillAlive then --&& not hitSomething then
+  if stillAlive then
     Just { bullet
     | position = newPosition
     , lifetime = aging

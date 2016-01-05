@@ -70,12 +70,47 @@ updateCollisions game bullets =
     collisionTests = List.map rockHits bullets
     newBullets = removeDeadBullets
       (onTargetBullets collisionTests) bullets
-    newRocks = game.rocks
+    newRocks = handleHitRocks collisionTests game.rocks
   in
   { game
   | bullets = newBullets
   , rocks = newRocks
   }
+
+
+handleHitRocks : List (List (Physics.CollisionResult Rock))
+  -> List Rock -> List Rock
+handleHitRocks collisions rocks =
+  let
+    x = hitRocks collisions
+    r = List.filter (\a -> a /= Nothing) x
+    r' = case (List.head r) of
+      Nothing ->
+        ".."
+      Just a ->
+        case a of
+          Nothing ->
+            ".."
+          Just b ->
+            toString b.color
+    dbg2 = Debug.watch "rocks" r'
+  in
+  rocks
+
+
+hitRocks : List (List (Physics.CollisionResult a))
+  ->  List (Maybe (Physics.Collidable a))
+hitRocks cols =
+  let
+    hitWhat = List.map (\n -> n.object)
+  in
+  List.map firstNonEmpty (List.map hitWhat cols)
+
+
+firstNonEmpty : List (Maybe a) -> Maybe a
+firstNonEmpty list =
+  List.head (List.filterMap identity list)
+
 
 removeDeadBullets : List Bool -> List Bullet -> List Bullet
 removeDeadBullets hits bullets =
