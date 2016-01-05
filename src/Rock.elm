@@ -14,6 +14,7 @@ type alias Rock =
   , position : Physics.Vector2
   , size : Int
   , radius : Float
+  , color : Color
   }
 
 
@@ -23,6 +24,7 @@ initRock size velocity position =
   , position = position
   , size = size
   , radius = 25
+  , color = black
   }
 
 
@@ -59,5 +61,5 @@ splitRock damage rock =
 drawRock : Rock -> Form
 drawRock rock =
   circle rock.radius
-    |> filled blue
+    |> filled rock.color
     |> move (rock.position.x, rock.position.y)

@@ -2,6 +2,7 @@ module Physics where
 
 import Config exposing (halfWidth, halfHeight)
 
+
 -- MODEL
 
 type alias Vector2 =
@@ -13,7 +14,7 @@ type alias Vector2 =
 type alias Collidable a =
   { a
   | position : Vector2
-  , radius: Float
+  , radius : Float
   }
 
 type alias CollisionResult a =

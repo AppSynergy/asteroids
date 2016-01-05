@@ -54,7 +54,7 @@ updateBullet dt targets bullet =
       False dt bullet.velocity bullet.position
     hits = detectCollisions targets bullet
     hitSomething = List.any (\n -> n.result == True) hits
-    dbg = Debug.watch "hit" hitSomething
+    doHits = recordHit hits
   in
   if stillAlive && not hitSomething then
     Just { bullet
@@ -65,15 +65,24 @@ updateBullet dt targets bullet =
     Nothing
 
 
+recordHit hits =
+  let
+    hitSomething = List.any (\n -> n.result == True) hits
+    hitF = \n -> if n.result == True then
+      n.object
+    else
+      Nothing
+    hitWhat = List.head (List.filterMap hitF hits)
+    dbg = Debug.watch "hit" hitSomething
+    dbg2 = Debug.watch "rock" hitWhat
+  in
+    hitWhat
+
+
 detectCollisions : List (Physics.Collidable a) -> Bullet
   -> List (Physics.CollisionResult a)
 detectCollisions targets bullet =
   List.map (Physics.collides bullet) targets
-
-
-firstNonEmpty : List (Maybe a) -> Maybe a
-firstNonEmpty list =
-  List.head (List.filterMap identity list)
 
 
 -- VIEW
