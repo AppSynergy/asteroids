@@ -23,7 +23,7 @@ initRock size velocity position =
   { velocity = velocity
   , position = position
   , size = size
-  , radius = 25
+  , radius = toFloat (8 * size)
   , color = black
   }
 
@@ -60,6 +60,18 @@ splitRock damage rock =
 
 drawRock : Rock -> Form
 drawRock rock =
-  circle rock.radius
-    |> filled rock.color
+  let
+    body = circle rock.radius
+      |> filled rock.color
+    spot1 = circle (rock.radius / 5)
+      |> filled darkRed
+      |> move (8 , 11)
+    spot2 = circle (rock.radius / 5)
+      |> filled darkRed
+      |> move (14 , -3)
+    spot3 = circle (rock.radius / 5)
+      |> filled darkRed
+      |> move (-7 , -7)
+  in
+  group [body, spot1, spot2, spot3]
     |> move (rock.position.x, rock.position.y)

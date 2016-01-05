@@ -149,7 +149,7 @@ view game =
       [ [ background, theShip ]
       , activeBullets
       , activeRocks
-      , [ viewGameState game ]
+      --, [ viewGameState game ]
       ]
   in
   container gameWidth gameHeight middle <|
