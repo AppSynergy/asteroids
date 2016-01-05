@@ -53,24 +53,23 @@ update (dt, keyInput, fireInput) game =
       game.bullets
     newBullets = List.filterMap
       (updateBullet dt) activeBullets
-    game' = updateCollisions game
+    game' = updateCollisions game newBullets
   in
   { game'
   | ship = updateShip (dt, keyInput, fireInput) game.ship
-  , bullets = newBullets
+  , bullets = game'.bullets
   , rocks = List.map (updateRock dt False) game.rocks
     |> List.concat
   }
 
 
-updateCollisions : Game -> Game
-updateCollisions game =
+updateCollisions : Game -> List Bullet -> Game
+updateCollisions game bullets =
   let
     rockHits = detectCollisions game.rocks
-    collState = List.map rockHits game.bullets
-    dbg = bReduce collState
-
-    newBullets = game.bullets
+    collisionTests = List.map rockHits bullets
+    dbg = onTargetBullets collisionTests
+    newBullets = removeDeadBullets dbg bullets
     newRocks = game.rocks
   in
   { game
@@ -78,13 +77,21 @@ updateCollisions game =
   , rocks = newRocks
   }
 
-bReduce : List (List (Physics.CollisionResult a)) -> List Bool
-bReduce state =
+removeDeadBullets : List Bool -> List Bullet -> List Bullet
+removeDeadBullets hits bullets =
   let
-    bar = List.any (\n -> n.result == True)
+    zipped = List.map2 (,) hits bullets
+    rmv a = if (fst a) then Nothing else Just (snd a)
   in
-    List.map bar state
+  List.filterMap rmv zipped
 
+
+onTargetBullets : List (List (Physics.CollisionResult a)) -> List Bool
+onTargetBullets collisionTests =
+  let
+    hitAnyTarget = List.any (\n -> n.result == True)
+  in
+    List.map hitAnyTarget collisionTests
 
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
