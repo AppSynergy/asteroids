@@ -9,6 +9,7 @@ import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Ship exposing (Ship)
 import Bullet exposing (Bullet)
 import Rock exposing (Rock)
+import Scoreboard exposing (Scoreboard)
 import Physics
 
 
@@ -18,6 +19,7 @@ type alias Game =
   { ship : Ship
   , bullets: List Bullet
   , rocks : List Rock
+  , scoreboard: Scoreboard
   }
 
 
@@ -39,6 +41,7 @@ initGame =
     [ Rock.init 3 25 (fst rockVelocities) (fst rockPositions)
     , Rock.init 3 9 (snd rockVelocities) (snd rockPositions)
     ]
+  , scoreboard = Scoreboard.init
   }
 
 
@@ -85,6 +88,7 @@ view game =
       [ [ background, Ship.draw game.ship ]
       , List.map Bullet.draw game.bullets
       , List.map Rock.draw game.rocks
+      , Scoreboard.draw game.scoreboard
       ]
   in
   container gameWidth gameHeight middle <|
