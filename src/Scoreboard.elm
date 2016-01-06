@@ -24,6 +24,9 @@ init =
 
 -- UPDATE
 
+update : Scoreboard -> Scoreboard
+update board =
+  board
 
 -- VIEW
 

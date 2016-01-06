@@ -63,11 +63,14 @@ update (dt, keyInput, fireInput) game =
       |> List.map2 (Rock.update dt)
         (Rock.damaged (List.length game.rocks) collisionTests)
       |> List.concat
+
+    newScoreboard = game.scoreboard
   in
   { game
   | ship = Ship.update (dt, keyInput, fireInput) game.ship
   , bullets = newBullets
   , rocks = newRocks
+  , scoreboard = newScoreboard
   }
 
 
