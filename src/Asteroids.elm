@@ -91,9 +91,14 @@ fff =
 mySize : Maybe (Physics.Collidable a) -> Int
 mySize obj =
   let
-    w = Maybe.withDefault 0 obj.size
+    d = Debug.watch "d" obj
+    q = case obj of
+      Nothing ->
+        0
+      Just w ->
+        4
   in
-  w
+  q
 
 detectCollisions : List (Physics.Collidable a) -> Bullet
   -> List (Physics.CollisionResult a)
