@@ -80,13 +80,18 @@ addRockScores collisionTests board =
   let
     d = Debug.watch "col" collisionTests
     w = List.map fff collisionTests
-    d2 = Debug.watch "w" w
+    p = List.sum (List.concat w)
+    d2 = Debug.watch "w" p
   in
   board
 
 fff : List (Physics.CollisionResult Rock) -> List Int
 fff =
-  List.map (\n -> (mySize n.object))
+  let
+    w = List.map (\n -> (mySize n.object))
+    d2 = Debug.watch "w2" w
+  in
+  w
 
 mySize : Maybe (Physics.Collidable Rock) -> Int
 mySize obj =
