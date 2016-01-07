@@ -64,7 +64,8 @@ update (dt, keyInput, fireInput) game =
         (Rock.damaged (List.length game.rocks) collisionTests)
       |> List.concat
 
-    newScoreboard = addRockScores collisionTests game.scoreboard
+    newScoreboard =
+      Scoreboard.update collisionTests game.scoreboard
   in
   { game
   | ship = Ship.update (dt, keyInput, fireInput) game.ship
@@ -72,26 +73,6 @@ update (dt, keyInput, fireInput) game =
   , rocks = newRocks
   , scoreboard = newScoreboard
   }
-
-
-addRockScores : List (List (Physics.CollisionResult Rock))
-  -> Scoreboard -> Scoreboard
-addRockScores collisionTests board =
-  let
-    collToObj = \n -> mySize n.object
-    q = List.map List.sum (List.map (List.map collToObj) collisionTests)
-    d2 = Debug.watch "q" q
-  in
-  board
-
-
-mySize : Maybe (Physics.Collidable Rock) -> Int
-mySize obj =
-  case obj of
-    Nothing ->
-      0
-    Just w ->
-      w.size
 
 
 detectCollisions : List (Physics.Collidable Rock) -> Bullet

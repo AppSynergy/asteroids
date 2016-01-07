@@ -33,6 +33,15 @@ init size spin velocity position =
   }
 
 
+getSize : Maybe Rock -> Int
+getSize rock =
+  case rock of
+    Nothing ->
+      0
+    Just rock ->
+      rock.size
+
+
 -- UPDATE
 
 update : Float -> Bool -> Rock -> List Rock

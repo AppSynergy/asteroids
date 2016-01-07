@@ -3,8 +3,10 @@ module Scoreboard where
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-
 import Text
+
+import Physics
+import Rock exposing (Rock)
 
 
 -- MODEL
@@ -24,9 +26,18 @@ init =
 
 -- UPDATE
 
-update : Scoreboard -> Scoreboard
-update board =
-  board
+update : List (List (Physics.CollisionResult Rock)) -> Scoreboard -> Scoreboard
+update collisionTests board =
+  let
+    collToObj = \n -> Rock.getSize n.object
+    sizeHitPerBullet = List.map List.sum
+      (List.map (List.map collToObj) collisionTests)
+    newScores = List.map (\n -> 60//n) sizeHitPerBullet
+  in
+  { board
+  | score = board.score + List.sum newScores
+  }
+
 
 -- VIEW
 
