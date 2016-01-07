@@ -74,7 +74,7 @@ update (dt, keyInput, fireInput) game =
   }
 
 
-addRockScores : List (List (Physics.CollisionResult a))
+addRockScores : List (List (Physics.CollisionResult Rock))
   -> Scoreboard -> Scoreboard
 addRockScores collisionTests board =
   let
@@ -84,11 +84,11 @@ addRockScores collisionTests board =
   in
   board
 
-fff : List (Physics.CollisionResult a) -> List Int
+fff : List (Physics.CollisionResult Rock) -> List Int
 fff =
   List.map (\n -> (mySize n.object))
 
-mySize : Maybe (Physics.Collidable a) -> Int
+mySize : Maybe (Physics.Collidable Rock) -> Int
 mySize obj =
   let
     d = Debug.watch "d" obj
@@ -96,12 +96,12 @@ mySize obj =
       Nothing ->
         0
       Just w ->
-        4
+        w.size
   in
   q
 
-detectCollisions : List (Physics.Collidable a) -> Bullet
-  -> List (Physics.CollisionResult a)
+detectCollisions : List (Physics.Collidable Rock) -> Bullet
+  -> List (Physics.CollisionResult Rock)
 detectCollisions targets bullet =
   List.map (Physics.collides bullet) targets
 
