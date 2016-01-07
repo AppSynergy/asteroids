@@ -79,9 +79,7 @@ addRockScores : List (List (Physics.CollisionResult Rock))
 addRockScores collisionTests board =
   let
     collToObj = \n -> mySize n.object
-    w = List.map
-      (List.map collToObj) collisionTests
-    q = List.map (List.sum) w
+    q = List.map List.sum (List.map (List.map collToObj) collisionTests)
     d2 = Debug.watch "q" q
   in
   board
