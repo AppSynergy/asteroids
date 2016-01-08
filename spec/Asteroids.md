@@ -38,14 +38,11 @@ The objective of Asteroids is to destroy asteroids and saucers.
 
 7. As the player shoots asteroids, they break into smaller asteroids that move faster and are more difficult to hit.
 
->> PARTLY DONE
->> - Need to fix math in Rock.split
->> - Need to make smaller asteroids faster
+>> DONE
 
 8. Smaller asteroids are also worth more points.
 
 >> DONE
->> - Although not sure if the points are correct.
 
 ## Saucers
 

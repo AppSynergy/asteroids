@@ -97,14 +97,18 @@ split damage rock =
 scatterVelocities : Physics.Vector2 -> (Physics.Vector2, Physics.Vector2)
 scatterVelocities velocity =
   let
-    angle1 = degrees 30
-    angle2 = negate angle1
+    accel = 1.1
+    scatter = degrees 10
+    angle = atan2 velocity.y velocity.x
+    angle1 = (angle - scatter)
+    angle2 = (angle + scatter)
+    speed = Physics.toScalar velocity
   in
-  ( { x = velocity.x * cos angle1
-    , y = velocity.y * negate (sin angle1)
+  ( { x = speed * accel * (cos angle1)
+    , y = speed * accel * (sin angle1)
     }
-  , { x = velocity.x * cos angle2
-    , y = velocity.y * negate (sin angle2)
+  , { x = speed * accel * (cos angle2)
+    , y = speed * accel * (sin angle2)
     }
   )
 

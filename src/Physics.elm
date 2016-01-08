@@ -24,6 +24,11 @@ type alias CollisionResult a =
   }
 
 
+toScalar : Vector2 -> Float
+toScalar vector =
+  sqrt ((vector.y ^ 2) + (vector.x ^ 2))
+
+
 -- UPDATE
 
 hitAny : List (CollisionResult a) -> Bool
