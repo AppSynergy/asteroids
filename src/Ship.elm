@@ -22,6 +22,8 @@ type alias Ship =
   , thrustRate : Float
   , dragRate : Float
   , maximumSpeed : Float
+  , invulnerable : Bool
+  , radius : Float
   }
 
 
@@ -38,6 +40,8 @@ init =
   , thrustRate = 3
   , dragRate = 1
   , maximumSpeed = 100
+  , invulnerable = True
+  , radius = 50
   }
 
 -- UPDATE

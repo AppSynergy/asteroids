@@ -52,20 +52,26 @@ update (dt, keyInput, fireInput) game =
   let
     bullets = Bullet.fire game.ship game.bullets
 
-    collisionTests = List.map
+    bulletCollideRock = List.map
       (detectCollisions game.rocks) bullets
+
+    rockCollideShip = List.map
+      (Physics.collides game.ship) game.rocks
+
+    w = Physics.hitAny rockCollideShip
+    d1 = Debug.watch "shipHit" w
 
     newBullets = bullets
       |> List.filterMap (Bullet.update dt)
-      |> Bullet.removeDead (Bullet.onTarget collisionTests)
+      |> Bullet.removeDead (Bullet.onTarget bulletCollideRock)
 
     newRocks = game.rocks
       |> List.map2 (Rock.update dt)
-        (Rock.damaged (List.length game.rocks) collisionTests)
+        (Rock.damaged (List.length game.rocks) bulletCollideRock)
       |> List.concat
 
     newScoreboard =
-      Scoreboard.update collisionTests game.scoreboard
+      Scoreboard.update bulletCollideRock game.scoreboard
   in
   { game
   | ship = Ship.update (dt, keyInput, fireInput) game.ship
