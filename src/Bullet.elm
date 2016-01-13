@@ -62,7 +62,7 @@ removeDead hits bullets =
   List.filterMap rmv zipped
 
 
-onTarget : List (List (Physics.CollisionResult a)) -> List Bool
+onTarget : Physics.CollisionMatrix a -> List Bool
 onTarget collisionTests =
   List.map Physics.hitAny collisionTests
 

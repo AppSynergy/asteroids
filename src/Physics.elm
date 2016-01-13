@@ -30,6 +30,9 @@ type alias CollisionResult a =
   }
 
 
+type alias CollisionMatrix a = List (List (CollisionResult a))
+
+
 toScalar : Vector2 -> Float
 toScalar vector =
   sqrt ((vector.y ^ 2) + (vector.x ^ 2))

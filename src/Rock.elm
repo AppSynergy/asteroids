@@ -71,7 +71,7 @@ updateFacing dt rock =
   }
 
 
-damaged : Int -> List (List (Physics.CollisionResult a)) -> List Bool
+damaged : Int -> Physics.CollisionMatrix a -> List Bool
 damaged rockCount collisionTests =
   let
     ct = List.map Physics.hitAny (transpose collisionTests)
@@ -81,8 +81,7 @@ damaged rockCount collisionTests =
   else ct
 
 
-getCollidePositions : List (List (Physics.CollisionResult a))
-  -> List Physics.Vector2
+getCollidePositions : Physics.CollisionMatrix a -> List Physics.Vector2
 getCollidePositions collisionTests =
   let
     tests = List.concat collisionTests
