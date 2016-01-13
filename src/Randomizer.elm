@@ -2,9 +2,13 @@ module Randomizer where
 
 import Random
 
-import UI exposing (gameWidth, gameHeight)
-import Physics
-
+{--
+r0 = Randomizer.init 567
+r1 = Randomizer.update gameWidth r0
+d1 = Debug.watch "rand2" r1.value
+r2 = Randomizer.update gameHeight r1
+d2 = Debug.watch "rand4" r2.value
+--}
 
 -- MODEL
 

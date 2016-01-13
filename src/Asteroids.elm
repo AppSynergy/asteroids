@@ -12,7 +12,7 @@ import Rock exposing (Rock)
 import Explosion.Explosion as Explosion exposing (Explosion)
 import Scoreboard exposing (Scoreboard)
 import Physics
-import Randomizer
+import Level.One
 
 
 -- MODEL
@@ -30,21 +30,11 @@ type alias Game =
 initGame : Game
 initGame =
   let
-    rockPositions =
-      ( { x = 50, y = 45 }
-      , { x = -134, y = 208 }
-      )
-    rockVelocities =
-      ( { x = 4, y = -9 }
-      , { x = -13, y = 8 }
-      )
+    level = Level.One.init
   in
   { ship = Ship.init
   , bullets = []
-  , rocks =
-    [ Rock.init 3 25 (fst rockVelocities) (fst rockPositions)
-    , Rock.init 3 9 (snd rockVelocities) (snd rockPositions)
-    ]
+  , rocks = level.rocks
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
@@ -56,12 +46,6 @@ initGame =
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
-    r0 = Randomizer.init 567
-    r1 = Randomizer.update gameWidth r0
-    d1 = Debug.watch "rand2" r1.value
-    r2 = Randomizer.update gameHeight r1
-    d2 = Debug.watch "rand4" r2.value
-
     bullets = Bullet.fire game.ship game.bullets
 
     bulletCollideRock = List.map
