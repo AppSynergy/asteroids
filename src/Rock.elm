@@ -81,6 +81,18 @@ damaged rockCount collisionTests =
   else ct
 
 
+getCollidePositions : List (List (Physics.CollisionResult a))
+  -> List Physics.Vector2
+getCollidePositions collisionTests =
+  let
+    tests = List.concat collisionTests
+    positions b = case b of
+      Just b -> Just b.position
+      Nothing -> Nothing
+  in
+  List.filterMap (\a -> positions a.object) tests
+
+
 split : Bool -> Rock -> List Rock
 split damage rock =
   let

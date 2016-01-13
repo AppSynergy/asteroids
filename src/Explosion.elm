@@ -44,6 +44,11 @@ initFragment position velocity =
 
 -- UPDATE
 
+create : List Physics.Vector2 -> List Explosion -> List Explosion
+create positions explosions =
+  List.append (List.map init positions) explosions
+
+
 update : Float -> Explosion -> Maybe Explosion
 update dt explosion =
   let

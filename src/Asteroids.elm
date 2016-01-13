@@ -44,8 +44,7 @@ initGame =
     [ Rock.init 3 25 (fst rockVelocities) (fst rockPositions)
     , Rock.init 3 9 (snd rockVelocities) (snd rockPositions)
     ]
-  -- STRAWMAN EXPLOSION AT GAME START
-  , explosions = (Explosion.init {x=4,y=55})::[]
+  , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.lightBlue
   }
@@ -76,11 +75,13 @@ update (dt, keyInput, fireInput) game =
         (Rock.damaged (List.length game.rocks) bulletCollideRock)
       |> List.concat
 
-    newExplosions =
-      List.filterMap (Explosion.update dt) game.explosions
+    newExplosions = game.explosions
+      |> List.filterMap (Explosion.update dt)
+      |> Explosion.create (Rock.getCollidePositions bulletCollideRock)
 
     newScoreboard =
       Scoreboard.update bulletCollideRock game.scoreboard
+
   in
   { game
   | ship = Ship.update (dt, keyInput, fireInput) game.ship
