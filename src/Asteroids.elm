@@ -1,9 +1,9 @@
 module Asteroids where
 
-import Color exposing (..)
+import Color
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
-import Time exposing (..)
+import Time
 
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Ship exposing (Ship)
@@ -17,9 +17,10 @@ import Physics
 
 type alias Game =
   { ship : Ship
-  , bullets: List Bullet
+  , bullets : List Bullet
   , rocks : List Rock
-  , scoreboard: Scoreboard
+  , scoreboard : Scoreboard
+  , backgroundColor : Color.Color
   }
 
 
@@ -42,6 +43,7 @@ initGame =
     , Rock.init 3 9 (snd rockVelocities) (snd rockPositions)
     ]
   , scoreboard = Scoreboard.init
+  , backgroundColor = Color.lightBlue
   }
 
 
@@ -93,7 +95,7 @@ view : Game -> Element
 view game =
   let
     background = rect gameWidth gameHeight
-      |> filled lightBlue
+      |> filled game.backgroundColor
     allForms = List.concat
       [ [ background, Ship.draw game.ship ]
       , List.map Bullet.draw game.bullets
@@ -115,7 +117,7 @@ gameState =
 inputSignal : Signal (Float, KeyInput, Bool)
 inputSignal =
   let
-    delta = fps 30
+    delta = Time.fps 30
     tuples = Signal.map3 (,,) delta ui.steering ui.firing
   in
   Signal.sampleOn delta tuples

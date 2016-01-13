@@ -1,6 +1,6 @@
 module Bullet where
 
-import Color exposing (..)
+import Color
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 
@@ -16,6 +16,7 @@ type alias Bullet =
   , lifetime : Int
   , radius: Float
   , speed : Float
+  , color : Color.Color
   }
 
 
@@ -29,6 +30,7 @@ init ship =
   , lifetime = 50
   , radius = 5
   , speed = speed
+  , color = Color.lightRed
   }
 
 
@@ -88,5 +90,5 @@ onTarget collisionTests =
 draw : Bullet -> Form
 draw bullet =
   circle bullet.radius
-    |> filled lightRed
+    |> filled bullet.color
     |> move (bullet.position.x, bullet.position.y)

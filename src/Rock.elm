@@ -1,6 +1,6 @@
 module Rock where
 
-import Color exposing (..)
+import Color
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import List.Extra exposing (transpose)
@@ -15,7 +15,8 @@ type alias Rock =
   , position : Physics.Vector2
   , size : Int
   , radius : Float
-  , color : Color
+  , color1 : Color.Color
+  , color2 : Color.Color
   , facing : Float
   , spinRate : Float
   }
@@ -27,7 +28,8 @@ init size spin velocity position =
   , position = position
   , size = size
   , radius = toFloat (8 * size)
-  , color = black
+  , color1 = Color.black
+  , color2 = Color.darkRed
   , facing = 0
   , spinRate = spin
   }
@@ -119,15 +121,15 @@ draw : Rock -> Form
 draw rock =
   let
     body = circle rock.radius
-      |> filled rock.color
+      |> filled rock.color1
     spot1 = circle (rock.radius / 5)
-      |> filled darkRed
+      |> filled rock.color2
       |> move (rock.radius / 3 , rock.radius / 2)
     spot2 = circle (rock.radius / 4)
-      |> filled darkRed
+      |> filled rock.color2
       |> move (rock.radius / -2 , rock.radius / 3.5)
     spot3 = circle (rock.radius / 7)
-      |> filled darkRed
+      |> filled rock.color2
       |> move (rock.radius / -3 , rock.radius / -1.6)
   in
   group [body, spot1, spot2, spot3]

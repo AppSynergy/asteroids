@@ -24,6 +24,8 @@ type alias Ship =
   , maximumSpeed : Float
   , invulnerable : Bool
   , radius : Float
+  , color1 : Color.Color
+  , color2 : Color.Color
   }
 
 
@@ -42,6 +44,8 @@ init =
   , maximumSpeed = 100
   , invulnerable = True
   , radius = 50
+  , color1 = Color.lightGreen
+  , color2 = Color.lightOrange
   }
 
 -- UPDATE
@@ -134,9 +138,9 @@ draw : Ship -> Form
 draw ship =
   let
     triangle = ngon 3 32
-      |> filled lightGreen
+      |> filled ship.color1
     engines = rect 4 32
-      |> filled lightOrange
+      |> filled ship.color2
       |> move (-18 , 0)
   in
   group [ triangle , engines ]
