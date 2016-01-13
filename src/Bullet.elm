@@ -24,22 +24,12 @@ init ship =
   let
     speed = 50
   in
-  { velocity = firingVelocity ship.facing speed
+  { velocity = Physics.toVector speed ship.facing
   , position = ship.position
   , lifetime = 50
   , radius = 5
   , speed = speed
   , color = Color.lightRed
-  }
-
-
-firingVelocity : Float -> Float -> Physics.Vector2
-firingVelocity facing speed =
-  let
-    facing' = degrees facing
-  in
-  { y = speed * cos facing'
-  , x = speed * negate (sin facing')
   }
 
 
