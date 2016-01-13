@@ -2,7 +2,6 @@ module Explosion where
 
 import Color
 import Graphics.Collage as Draw
-import Graphics.Element
 
 import Physics
 

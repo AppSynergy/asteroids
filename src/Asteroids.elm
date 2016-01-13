@@ -1,8 +1,8 @@
 module Asteroids where
 
 import Color
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Graphics.Collage as Draw
+import Graphics.Element as Element
 import Time
 
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
@@ -99,11 +99,11 @@ detectCollisions targets bullet =
 
 -- VIEW
 
-view : Game -> Element
+view : Game -> Element.Element
 view game =
   let
-    background = rect gameWidth gameHeight
-      |> filled game.backgroundColor
+    background = Draw.rect gameWidth gameHeight
+      |> Draw.filled game.backgroundColor
     allForms = List.concat
       [ [ background, Ship.draw game.ship ]
       , List.map Bullet.draw game.bullets
@@ -112,8 +112,8 @@ view game =
       , Scoreboard.draw game.scoreboard
       ]
   in
-  container gameWidth gameHeight middle <|
-    collage gameWidth gameHeight allForms
+  Element.container gameWidth gameHeight Element.middle <|
+    Draw.collage gameWidth gameHeight allForms
 
 
 -- SIGNALS
@@ -132,6 +132,6 @@ inputSignal =
   Signal.sampleOn delta tuples
 
 
-main : Signal Element
+main : Signal Element.Element
 main =
   Signal.map view gameState

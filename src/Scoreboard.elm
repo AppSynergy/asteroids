@@ -1,8 +1,8 @@
 module Scoreboard where
 
-import Color exposing (..)
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Color
+import Graphics.Collage as Draw
+import Graphics.Element as Element
 import Text
 
 import Physics
@@ -41,16 +41,16 @@ update collisionTests board =
 
 -- VIEW
 
-draw : Scoreboard -> List Form
+draw : Scoreboard -> List Draw.Form
 draw board =
   let
     scoreText =
       "SCORE : " ++ (toString board.score)
-        |> Text.fromString >> leftAligned >> toForm
-        |> move (200,200)
+        |> Text.fromString >> Element.leftAligned >> Draw.toForm
+        |> Draw.move (200,200)
     livesText =
       "LIVES : " ++ (toString board.lives)
-        |> Text.fromString >> leftAligned >> toForm
-        |> move (200,170)
+        |> Text.fromString >> Element.leftAligned >> Draw.toForm
+        |> Draw.move (200,170)
   in
   [scoreText, livesText]

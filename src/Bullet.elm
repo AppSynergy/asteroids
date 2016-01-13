@@ -1,8 +1,7 @@
 module Bullet where
 
 import Color
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Graphics.Collage as Draw
 
 import Ship exposing (Ship)
 import Physics
@@ -87,8 +86,8 @@ onTarget collisionTests =
 
 -- VIEW
 
-draw : Bullet -> Form
+draw : Bullet -> Draw.Form
 draw bullet =
-  circle bullet.radius
-    |> filled bullet.color
-    |> move (bullet.position.x, bullet.position.y)
+  Draw.circle bullet.radius
+    |> Draw.filled bullet.color
+    |> Draw.move (bullet.position.x, bullet.position.y)

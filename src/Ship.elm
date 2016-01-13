@@ -1,8 +1,7 @@
 module Ship where
 
-import Color exposing (..)
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Color
+import Graphics.Collage as Draw
 
 import UI exposing (KeyInput)
 import Physics
@@ -134,15 +133,15 @@ updateDrag ship =
 
 -- VIEW
 
-draw : Ship -> Form
+draw : Ship -> Draw.Form
 draw ship =
   let
-    triangle = ngon 3 32
-      |> filled ship.color1
-    engines = rect 4 32
-      |> filled ship.color2
-      |> move (-18 , 0)
+    triangle = Draw.ngon 3 32
+      |> Draw.filled ship.color1
+    engines = Draw.rect 4 32
+      |> Draw.filled ship.color2
+      |> Draw.move (-18 , 0)
   in
-  group [ triangle , engines ]
-    |> rotate ( degrees (ship.facing + 90 ))
-    |> move (ship.position.x, ship.position.y)
+  Draw.group [ triangle , engines ]
+    |> Draw.rotate ( degrees (ship.facing + 90 ))
+    |> Draw.move (ship.position.x, ship.position.y)

@@ -1,8 +1,7 @@
 module Rock where
 
 import Color
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Graphics.Collage as Draw
 import List.Extra exposing (transpose)
 
 import Physics
@@ -117,21 +116,21 @@ scatterVelocities velocity =
 
 -- VIEW
 
-draw : Rock -> Form
+draw : Rock -> Draw.Form
 draw rock =
   let
-    body = circle rock.radius
-      |> filled rock.color1
-    spot1 = circle (rock.radius / 5)
-      |> filled rock.color2
-      |> move (rock.radius / 3 , rock.radius / 2)
-    spot2 = circle (rock.radius / 4)
-      |> filled rock.color2
-      |> move (rock.radius / -2 , rock.radius / 3.5)
-    spot3 = circle (rock.radius / 7)
-      |> filled rock.color2
-      |> move (rock.radius / -3 , rock.radius / -1.6)
+    body = Draw.circle rock.radius
+      |> Draw.filled rock.color1
+    spot1 = Draw.circle (rock.radius / 5)
+      |> Draw.filled rock.color2
+      |> Draw.move (rock.radius / 3 , rock.radius / 2)
+    spot2 = Draw.circle (rock.radius / 4)
+      |> Draw.filled rock.color2
+      |> Draw.move (rock.radius / -2 , rock.radius / 3.5)
+    spot3 = Draw.circle (rock.radius / 7)
+      |> Draw.filled rock.color2
+      |> Draw.move (rock.radius / -3 , rock.radius / -1.6)
   in
-  group [body, spot1, spot2, spot3]
-    |> rotate (degrees rock.facing)
-    |> move (rock.position.x, rock.position.y)
+  Draw.group [body, spot1, spot2, spot3]
+    |> Draw.rotate (degrees rock.facing)
+    |> Draw.move (rock.position.x, rock.position.y)
