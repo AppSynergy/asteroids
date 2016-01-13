@@ -77,7 +77,7 @@ update (dt, keyInput, fireInput) game =
       |> List.concat
 
     newExplosions =
-      List.map (Explosion.update dt) game.explosions
+      List.filterMap (Explosion.update dt) game.explosions
 
     newScoreboard =
       Scoreboard.update bulletCollideRock game.scoreboard

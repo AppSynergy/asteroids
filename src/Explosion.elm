@@ -12,13 +12,13 @@ type alias Explosion =
   { position : Physics.Vector2
   , fragments : List Fragment
   , color: Color.Color
+  , lifetime : Int
   }
 
 
 type alias Fragment =
   { velocity : Physics.Vector2
   , position : Physics.Vector2
-  , lifetime : Int
   }
 
 
@@ -31,6 +31,7 @@ init position =
   { position = position
   , fragments = List.map (initFragment position) velocities
   , color = Color.yellow
+  , lifetime = 20
   }
 
 
@@ -38,17 +39,24 @@ initFragment : Physics.Vector2 -> Physics.Vector2 -> Fragment
 initFragment position velocity =
   { velocity = velocity
   , position = position
-  , lifetime = 20
   }
 
 
 -- UPDATE
 
-update : Float -> Explosion -> Explosion
+update : Float -> Explosion -> Maybe Explosion
 update dt explosion =
-  { explosion
-  | fragments = List.map (updateFragment dt) explosion.fragments
-  }
+  let
+    stillAlive = explosion.lifetime > 0
+    aging = if stillAlive then explosion.lifetime - 1 else 0
+  in
+  if stillAlive then
+    Just { explosion
+    | fragments = List.map (updateFragment dt) explosion.fragments
+    , lifetime = aging
+    }
+  else
+    Nothing
 
 
 updateFragment : Float -> Fragment -> Fragment
