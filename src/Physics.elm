@@ -41,6 +41,17 @@ toVector magnitude angle =
 
 -- UPDATE
 
+expiration obj result =
+  let
+    stillAlive = obj.lifetime > 0
+    aging = if stillAlive then obj.lifetime - 1 else 0
+  in
+  if stillAlive then
+    Just result
+  else
+    Nothing
+
+
 hitAny : List (CollisionResult a) -> Bool
 hitAny =
   List.any (\n -> n.result == True)
