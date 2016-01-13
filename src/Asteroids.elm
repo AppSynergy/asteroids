@@ -12,6 +12,7 @@ import Rock exposing (Rock)
 import Explosion.Explosion as Explosion exposing (Explosion)
 import Scoreboard exposing (Scoreboard)
 import Physics
+import Randomizer
 
 
 -- MODEL
@@ -55,6 +56,12 @@ initGame =
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
+    r0 = Randomizer.init 567
+    r1 = Randomizer.update gameWidth r0
+    d1 = Debug.watch "rand2" r1.value
+    r2 = Randomizer.update gameHeight r1
+    d2 = Debug.watch "rand4" r2.value
+
     bullets = Bullet.fire game.ship game.bullets
 
     bulletCollideRock = List.map
