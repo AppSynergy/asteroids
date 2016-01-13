@@ -11,6 +11,12 @@ type alias Vector2 =
   }
 
 
+type alias Expirable a =
+  { a
+  | lifetime : Int
+  }
+
+
 type alias Collidable a =
   { a
   | position : Vector2
@@ -41,13 +47,14 @@ toVector magnitude angle =
 
 -- UPDATE
 
-expiration obj result =
+expiration : Expirable a -> Maybe (Expirable a)
+expiration obj =
   let
     stillAlive = obj.lifetime > 0
     aging = if stillAlive then obj.lifetime - 1 else 0
   in
   if stillAlive then
-    Just result
+    Just { obj | lifetime = aging }
   else
     Nothing
 

@@ -47,16 +47,11 @@ initFragment position velocity =
 update : Float -> Explosion -> Maybe Explosion
 update dt explosion =
   let
-    stillAlive = explosion.lifetime > 0
-    aging = if stillAlive then explosion.lifetime - 1 else 0
+    newExplosion = { explosion
+      | fragments = List.map (updateFragment dt) explosion.fragments
+      }
   in
-  if stillAlive then
-    Just { explosion
-    | fragments = List.map (updateFragment dt) explosion.fragments
-    , lifetime = aging
-    }
-  else
-    Nothing
+  Physics.expiration newExplosion
 
 
 updateFragment : Float -> Fragment -> Fragment

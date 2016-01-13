@@ -38,18 +38,11 @@ init ship =
 update : Float -> Bullet -> Maybe Bullet
 update dt bullet =
   let
-    stillAlive = bullet.lifetime > 0
-    aging = if stillAlive then bullet.lifetime - 1 else 0
     newPosition = Physics.updatePosition
       False dt bullet.velocity bullet.position
+    newBullet = { bullet | position = newPosition }
   in
-  if stillAlive then
-    Just { bullet
-    | position = newPosition
-    , lifetime = aging
-    }
-  else
-    Nothing
+  Physics.expiration newBullet
 
 
 fire : Ship -> List Bullet -> List Bullet

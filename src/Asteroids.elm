@@ -102,9 +102,6 @@ detectCollisions targets bullet =
 view : Game -> Element.Element
 view game =
   let
-
-    
-
     background = Draw.rect gameWidth gameHeight
       |> Draw.filled game.backgroundColor
     allForms = List.concat
