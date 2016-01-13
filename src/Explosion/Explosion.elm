@@ -1,10 +1,10 @@
-module Explosion where
+module Explosion.Explosion where
 
 import Color
 import Graphics.Collage as Draw
 
 import Physics
-
+import Explosion.Fragment as Fragment exposing (Fragment)
 
 -- MODEL
 
@@ -16,12 +16,6 @@ type alias Explosion =
   }
 
 
-type alias Fragment =
-  { velocity : Physics.Vector2
-  , position : Physics.Vector2
-  }
-
-
 init : Physics.Vector2 -> Explosion
 init position =
   let
@@ -29,16 +23,9 @@ init position =
     velocities = List.map (Physics.toVector 16) angles
   in
   { position = position
-  , fragments = List.map (initFragment position) velocities
+  , fragments = List.map (Fragment.init position) velocities
   , color = Color.yellow
   , lifetime = 20
-  }
-
-
-initFragment : Physics.Vector2 -> Physics.Vector2 -> Fragment
-initFragment position velocity =
-  { velocity = velocity
-  , position = position
   }
 
 
@@ -53,18 +40,10 @@ update : Float -> Explosion -> Maybe Explosion
 update dt explosion =
   let
     newExplosion = { explosion
-      | fragments = List.map (updateFragment dt) explosion.fragments
+      | fragments = List.map (Fragment.update dt) explosion.fragments
       }
   in
   Physics.expiration newExplosion
-
-
-updateFragment : Float -> Fragment -> Fragment
-updateFragment dt fragment =
-  { fragment
-  | position = Physics.updatePosition
-    False dt fragment.velocity fragment.position
-  }
 
 
 -- VIEW
@@ -72,12 +51,5 @@ updateFragment dt fragment =
 draw : Explosion -> Draw.Form
 draw explosion =
   explosion.fragments
-    |> List.map (drawFragment explosion.color)
+    |> List.map (Fragment.draw explosion.color)
     |> Draw.group
-
-
-drawFragment : Color.Color -> Fragment -> Draw.Form
-drawFragment color fragment =
-  Draw.circle 3
-    |> Draw.filled color
-    |> Draw.move (fragment.position.x, fragment.position.y)

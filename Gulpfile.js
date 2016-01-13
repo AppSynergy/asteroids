@@ -7,7 +7,7 @@ var watch = require('gulp-watch')
 gulp.task('elm-init', elm.init);
 
 gulp.task('watch', function() {
-  gulp.watch('src/*', ['elm']);
+  gulp.watch('src/**', ['elm']);
 });
 
 gulp.task('elm', ['elm-init'], function(){
