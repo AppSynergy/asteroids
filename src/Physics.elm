@@ -85,6 +85,17 @@ collides obj1 obj2 =
     { result = check, object = hit }
 
 
+getCollidePositions : CollisionMatrix a -> List Vector2
+getCollidePositions collisionTests =
+  let
+    tests = List.concat collisionTests
+    positions b = case b of
+      Just b -> Just b.position
+      Nothing -> Nothing
+  in
+  List.filterMap (\a -> positions a.object) tests
+
+
 updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
 updatePosition isWrappable dt velocity position =
   let

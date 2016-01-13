@@ -26,7 +26,7 @@ init =
 
 -- UPDATE
 
-update : List (List (Physics.CollisionResult Rock)) -> Scoreboard -> Scoreboard
+update : Physics.CollisionMatrix Rock -> Scoreboard -> Scoreboard
 update collisionTests board =
   let
     collToObj = \n -> Rock.getSize n.object
