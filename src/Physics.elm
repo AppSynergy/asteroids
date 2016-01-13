@@ -85,15 +85,15 @@ collides obj1 obj2 =
     { result = check, object = hit }
 
 
-getCollidePositions : CollisionMatrix a -> List Vector2
-getCollidePositions collisionTests =
+getCollidePositions : List (CollisionResult a) -> List Vector2
+getCollidePositions collisions =
   let
-    tests = List.concat collisionTests
+    --tests = List.concat collisionTests
     positions b = case b of
       Just b -> Just b.position
       Nothing -> Nothing
   in
-  List.filterMap (\a -> positions a.object) tests
+  List.filterMap (\a -> positions a.object) collisions
 
 
 updatePosition : Bool -> Float -> Vector2 -> Vector2 -> Vector2
