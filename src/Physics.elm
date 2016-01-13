@@ -29,6 +29,16 @@ toScalar vector =
   sqrt ((vector.y ^ 2) + (vector.x ^ 2))
 
 
+toVector : Float -> Float -> Vector2
+toVector magnitude angle =
+  let
+    angle' = degrees angle
+  in
+  { y = (magnitude * cos angle')
+  , x = (magnitude * negate (sin angle'))
+  }
+
+
 -- UPDATE
 
 hitAny : List (CollisionResult a) -> Bool

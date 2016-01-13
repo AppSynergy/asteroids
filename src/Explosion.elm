@@ -24,15 +24,19 @@ type alias Fragment =
 
 init : Physics.Vector2 -> Explosion
 init position =
+  let
+    angles = List.scanl (+) 0 (List.repeat 9 36)
+    velocities = List.map (Physics.toVector 16) angles
+  in
   { position = position
-  , fragments = List.repeat 10 (initFragment position)
+  , fragments = List.map (initFragment position) velocities
   , color = Color.yellow
   }
 
 
-initFragment : Physics.Vector2 -> Fragment
-initFragment position =
-  { velocity = { x = 2, y = 2 }
+initFragment : Physics.Vector2 -> Physics.Vector2 -> Fragment
+initFragment position velocity =
+  { velocity = velocity
   , position = position
   , lifetime = 20
   }
@@ -42,16 +46,30 @@ initFragment position =
 
 update : Float -> Explosion -> Explosion
 update dt explosion =
-  explosion
+  { explosion
+  | fragments = List.map (updateFragment dt) explosion.fragments
+  }
+
+
+updateFragment : Float -> Fragment -> Fragment
+updateFragment dt fragment =
+  { fragment
+  | position = Physics.updatePosition
+    False dt fragment.velocity fragment.position
+  }
 
 
 -- VIEW
 
 draw : Explosion -> Draw.Form
 draw explosion =
-  let
-    db = Debug.watch "expl" explosion
-  in
-  Draw.circle 5
-    |> Draw.filled explosion.color
-    |> Draw.move (explosion.position.x, explosion.position.y)
+  explosion.fragments
+    |> List.map (drawFragment explosion.color)
+    |> Draw.group
+
+
+drawFragment : Color.Color -> Fragment -> Draw.Form
+drawFragment color fragment =
+  Draw.circle 3
+    |> Draw.filled color
+    |> Draw.move (fragment.position.x, fragment.position.y)
