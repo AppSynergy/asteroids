@@ -46,7 +46,7 @@ initGame =
     ]
   , explosions = []
   , scoreboard = Scoreboard.init
-  , backgroundColor = Color.lightBlue
+  , backgroundColor = Color.black
   }
 
 
@@ -106,11 +106,12 @@ view game =
     background = Draw.rect gameWidth gameHeight
       |> Draw.filled game.backgroundColor
     allForms = List.concat
-      [ [ background, Ship.draw game.ship ]
+      [ [ background ]
       , List.map Bullet.draw game.bullets
       , List.map Rock.draw game.rocks
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
+      , [ Ship.draw game.ship ]
       ]
   in
   Element.container gameWidth gameHeight Element.middle <|

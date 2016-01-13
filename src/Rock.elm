@@ -27,8 +27,8 @@ init size spin velocity position =
   , position = position
   , size = size
   , radius = toFloat (8 * size)
-  , color1 = Color.black
-  , color2 = Color.darkRed
+  , color1 = Color.rgb 80 80 80
+  , color2 = Color.rgb 60 60 60
   , facing = 0
   , spinRate = spin
   }
