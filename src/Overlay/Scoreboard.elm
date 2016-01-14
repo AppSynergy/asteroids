@@ -75,5 +75,5 @@ textFormat string =
     |> Text.fromString
     |> Text.style scoreboardStyle
     >> Element.rightAligned
-    |> Element.width 100
+    |> Element.width 150
     >> Draw.toForm

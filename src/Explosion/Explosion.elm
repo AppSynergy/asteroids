@@ -25,7 +25,7 @@ init position =
   { position = position
   , fragments = List.map (Fragment.init position) velocities
   , color = Color.yellow
-  , lifetime = 20
+  , lifetime = 12
   }
 
 
