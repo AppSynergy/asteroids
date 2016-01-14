@@ -17,6 +17,16 @@ type alias Scoreboard =
   }
 
 
+scoreboardStyle =
+  { typeface = [ "Times New Roman", "serif" ]
+  , height = Just 20
+  , color = Color.white
+  , bold = True
+  , italic = False
+  , line = Nothing
+  }
+
+
 init : Scoreboard
 init =
   { score = 0
@@ -46,11 +56,21 @@ draw board =
   let
     scoreText =
       "SCORE : " ++ (toString board.score)
-        |> Text.fromString >> Element.leftAligned >> Draw.toForm
+        |> textFormat
         |> Draw.move (200,200)
     livesText =
       "LIVES : " ++ (toString board.lives)
-        |> Text.fromString >> Element.leftAligned >> Draw.toForm
+        |> textFormat
         |> Draw.move (200,170)
   in
   [scoreText, livesText]
+
+
+textFormat : String -> Draw.Form
+textFormat string =
+  string
+    |> Text.fromString
+    |> Text.style scoreboardStyle
+    >> Element.rightAligned
+    |> Element.width 100
+    >> Draw.toForm
