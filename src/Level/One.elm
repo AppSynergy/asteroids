@@ -4,6 +4,7 @@ import Rock exposing (Rock)
 import Randomizer exposing (Randomizer)
 import UI exposing (gameWidth, gameHeight)
 
+
 -- MODEL
 
 type alias Level =
@@ -12,6 +13,7 @@ type alias Level =
   , rocks : List Rock
   }
 
+
 init : Level
 init =
   let
@@ -19,11 +21,12 @@ init =
   in
   { number = 1
   , rand = r
-  , rocks = someRocks r
+  , rocks = rocks r
   }
 
 
-someRocks rand =
+rocks : Randomizer -> List Rock
+rocks rand =
   let
     vmax = 10
     r1 = Randomizer.update gameWidth rand
@@ -34,7 +37,12 @@ someRocks rand =
     r6 = Randomizer.update vmax r5
     r7 = Randomizer.update vmax r6
     r8 = Randomizer.update vmax r7
+    r9 = Randomizer.update gameWidth r8
+    r10 = Randomizer.update gameHeight r9
+    r11 = Randomizer.update vmax r10
+    r12 = Randomizer.update vmax r11
   in
   [ Rock.init 3 25 { x = r5.value, y = r6.value } { x = r1.value, y = r2.value }
   , Rock.init 3 9 { x = r7.value, y = r8.value } { x = r3.value, y = r4.value }
+  , Rock.init 3 14 { x = r11.value, y = r12.value } { x = r9.value, y = r10.value }
   ]
