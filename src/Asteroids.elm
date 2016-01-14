@@ -54,7 +54,9 @@ update (dt, keyInput, fireInput) game =
     rockCollideShip = List.map
       (Physics.collides game.ship) game.rocks
 
-    shipHit = Physics.hitAny rockCollideShip
+    shipHit = if game.ship.invulnerable then False
+      else Physics.hitAny rockCollideShip
+
     d1 = Debug.watch "shipHit" shipHit
 
     newBullets = bullets
@@ -70,18 +72,23 @@ update (dt, keyInput, fireInput) game =
       |> List.filterMap (Explosion.update dt)
       |> Explosion.create
         (Physics.getCollidePositions (List.concat bulletCollideRock))
-      |> Explosion.create
-        (Physics.getCollidePositions rockCollideShip)
+
+    shipExplosions = if shipHit then
+      newExplosions
+        |> Explosion.create
+          (Physics.getCollidePositions rockCollideShip)
+    else
+      newExplosions
 
     newScoreboard =
-      Scoreboard.update bulletCollideRock game.scoreboard
+      Scoreboard.update bulletCollideRock shipHit game.scoreboard
 
   in
   { game
   | ship = Ship.update (dt, keyInput, fireInput) game.ship
   , bullets = newBullets
   , rocks = newRocks
-  , explosions = newExplosions
+  , explosions = shipExplosions
   , scoreboard = newScoreboard
   }
 

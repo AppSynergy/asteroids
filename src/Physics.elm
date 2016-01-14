@@ -67,11 +67,6 @@ hitAny =
   List.any (\n -> n.result == True)
 
 
-near : Float -> Float -> Float -> Bool
-near k c n =
-  n >= k - c && n <= k + c
-
-
 collides : Collidable a -> Collidable b -> CollisionResult b
 collides obj1 obj2 =
   let
@@ -91,7 +86,6 @@ collides obj1 obj2 =
 getCollidePositions : List (CollisionResult a) -> List Vector2
 getCollidePositions collisions =
   let
-    --tests = List.concat collisionTests
     positions b = case b of
       Just b -> Just b.position
       Nothing -> Nothing

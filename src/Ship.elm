@@ -22,6 +22,7 @@ type alias Ship =
   , dragRate : Float
   , maximumSpeed : Float
   , invulnerable : Bool
+  , invulnerableTime : Int
   , radius : Float
   , color1 : Color.Color
   , color2 : Color.Color
@@ -42,6 +43,7 @@ init =
   , dragRate = 1
   , maximumSpeed = 100
   , invulnerable = True
+  , invulnerableTime = 10
   , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
@@ -52,6 +54,8 @@ init =
 update : (Float, KeyInput, Bool) -> Ship -> Ship
 update (dt, keyInput, fireInput) ship =
   let
+    d1 = Debug.watch "invT" ship.invulnerableTime
+    d2 = Debug.watch "invS" ship.invulnerable
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
     thrust = if upDownInput > 0 then upDownInput else 0
@@ -60,15 +64,28 @@ update (dt, keyInput, fireInput) ship =
   |> updateFacing leftRightInput
   |> updateThrust thrust dt
   |> updateFiring fireInput
+  |> updateInvulnerable
 
+
+updateInvulnerable : Ship -> Ship
+updateInvulnerable ship =
+  let
+    newTime = if ship.invulnerable && ship.invulnerableTime > 0 then
+      ship.invulnerableTime - 1
+    else
+      ship.invulnerableTime
+  in
+  { ship
+  | invulnerable = ship.invulnerableTime > 1
+  , invulnerableTime = newTime
+  }
 
 updateFiring : Bool -> Ship -> Ship
 updateFiring fireInput ship =
   let
     fireOK = ship.coolDown == 0 && fireInput
-    coolDownTime = ship.coolDownTime
     newCoolDown = if fireOK then
-      coolDownTime
+      ship.coolDownTime
     else if ship.coolDown > 0 then
       ship.coolDown - 1
     else

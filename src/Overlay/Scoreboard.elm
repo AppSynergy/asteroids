@@ -37,16 +37,18 @@ init =
 
 -- UPDATE
 
-update : Physics.CollisionMatrix Rock -> Scoreboard -> Scoreboard
-update collisionTests board =
+update : Physics.CollisionMatrix Rock -> Bool -> Scoreboard -> Scoreboard
+update collisionTests shipHit board =
   let
     collToObj = \n -> Rock.getSize n.object
     sizeHitPerBullet = List.map List.sum
       (List.map (List.map collToObj) collisionTests)
     newScores = List.map (\n -> 60//n) sizeHitPerBullet
+    livesLost = if shipHit then 1 else 0
   in
   { board
   | score = board.score + List.sum newScores
+  , lives = board.lives - livesLost
   }
 
 
