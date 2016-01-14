@@ -1,4 +1,4 @@
-module Scoreboard where
+module Overlay.Scoreboard where
 
 import Color
 import Graphics.Collage as Draw

@@ -10,7 +10,7 @@ import Ship exposing (Ship)
 import Bullet exposing (Bullet)
 import Rock exposing (Rock)
 import Explosion.Explosion as Explosion exposing (Explosion)
-import Scoreboard exposing (Scoreboard)
+import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Physics
 import Level.One
 
