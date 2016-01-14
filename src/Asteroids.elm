@@ -54,6 +54,9 @@ update (dt, keyInput, fireInput) game =
     rockCollideShip = List.map
       (Physics.collides game.ship) game.rocks
 
+    shipHit = Physics.hitAny rockCollideShip
+    d1 = Debug.watch "shipHit" shipHit
+
     newBullets = bullets
       |> List.filterMap (Bullet.update dt)
       |> Bullet.removeDead (Bullet.onTarget bulletCollideRock)

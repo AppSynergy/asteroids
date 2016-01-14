@@ -42,7 +42,7 @@ init =
   , dragRate = 1
   , maximumSpeed = 100
   , invulnerable = True
-  , radius = 50
+  , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
   }
@@ -141,7 +141,10 @@ draw ship =
     engines = Draw.rect 4 32
       |> Draw.filled ship.color2
       |> Draw.move (-18 , 0)
+    dline = Draw.defaultLine
+    bound = Draw.circle ship.radius
+      |> Draw.outlined { dline | color = Color.red }
   in
-  Draw.group [ triangle , engines ]
+  Draw.group [ triangle , engines , bound ]
     |> Draw.rotate ( degrees (ship.facing + 90 ))
     |> Draw.move (ship.position.x, ship.position.y)

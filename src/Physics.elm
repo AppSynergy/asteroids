@@ -75,8 +75,11 @@ near k c n =
 collides : Collidable a -> Collidable b -> CollisionResult b
 collides obj1 obj2 =
   let
-    check = near obj1.position.x obj2.radius obj2.position.x
-      && near obj1.position.y obj2.radius obj2.position.y
+    impactParam = obj1.radius + obj2.radius
+    bx = abs ( obj1.position.x - obj2.position.x )
+    by = abs ( obj1.position.y - obj2.position.y )
+    b = toScalar { x = bx, y = by }
+    check = b < impactParam
     hit = if check then
       Just obj2
     else

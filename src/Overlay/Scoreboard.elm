@@ -17,6 +17,7 @@ type alias Scoreboard =
   }
 
 
+scoreboardStyle : Text.Style
 scoreboardStyle =
   { typeface = [ "Times New Roman", "serif" ]
   , height = Just 20
