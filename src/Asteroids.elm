@@ -83,9 +83,14 @@ update (dt, keyInput, fireInput) game =
     newScoreboard =
       Scoreboard.update bulletCollideRock shipHit game.scoreboard
 
+    newShip =
+      game.ship
+        |> Ship.update  (dt, keyInput, fireInput)
+        |> Ship.loseLife shipHit
+
   in
   { game
-  | ship = Ship.update (dt, keyInput, fireInput) game.ship
+  | ship = newShip
   , bullets = newBullets
   , rocks = newRocks
   , explosions = shipExplosions

@@ -22,6 +22,7 @@ type alias Ship =
   , dragRate : Float
   , maximumSpeed : Float
   , invulnerable : Bool
+  , invulnerableCounter : Int
   , invulnerableTime : Int
   , radius : Float
   , color1 : Color.Color
@@ -43,7 +44,8 @@ init =
   , dragRate = 1
   , maximumSpeed = 100
   , invulnerable = True
-  , invulnerableTime = 10
+  , invulnerableCounter = 100
+  , invulnerableTime = 100
   , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
@@ -54,7 +56,7 @@ init =
 update : (Float, KeyInput, Bool) -> Ship -> Ship
 update (dt, keyInput, fireInput) ship =
   let
-    d1 = Debug.watch "invT" ship.invulnerableTime
+    d1 = Debug.watch "invT" ship.invulnerableCounter
     d2 = Debug.watch "invS" ship.invulnerable
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
@@ -70,14 +72,14 @@ update (dt, keyInput, fireInput) ship =
 updateInvulnerable : Ship -> Ship
 updateInvulnerable ship =
   let
-    newTime = if ship.invulnerable && ship.invulnerableTime > 0 then
-      ship.invulnerableTime - 1
+    newTime = if ship.invulnerable && ship.invulnerableCounter > 0 then
+      ship.invulnerableCounter - 1
     else
-      ship.invulnerableTime
+      ship.invulnerableCounter
   in
   { ship
-  | invulnerable = ship.invulnerableTime > 1
-  , invulnerableTime = newTime
+  | invulnerable = ship.invulnerableCounter > 1
+  , invulnerableCounter = newTime
   }
 
 updateFiring : Bool -> Ship -> Ship
@@ -148,13 +150,31 @@ updateDrag ship =
   , x = if abs velocity.x > 0 then velocity.x - dragRateX else 0
   }
 
+
+loseLife : Bool -> Ship -> Ship
+loseLife hit ship =
+  if hit then
+    { ship
+    | position = { x = 0, y = 0 }
+    , invulnerable = True
+    , invulnerableCounter = ship.invulnerableTime
+    }
+  else
+    ship
+
+
 -- VIEW
 
 draw : Ship -> Draw.Form
 draw ship =
   let
+    itime = ship.invulnerableCounter
+    flashColor = if itime > 0 then
+      if itime % 5 == 0 then Color.white else ship.color1
+    else
+      ship.color1
     triangle = Draw.ngon 3 32
-      |> Draw.filled ship.color1
+      |> Draw.filled flashColor
     engines = Draw.rect 4 32
       |> Draw.filled ship.color2
       |> Draw.move (-18 , 0)
