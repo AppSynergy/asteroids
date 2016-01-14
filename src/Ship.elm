@@ -27,6 +27,7 @@ type alias Ship =
   , radius : Float
   , color1 : Color.Color
   , color2 : Color.Color
+  , dead : Bool
   }
 
 
@@ -49,6 +50,7 @@ init =
   , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
+  , dead = False
   }
 
 -- UPDATE
@@ -56,8 +58,6 @@ init =
 update : (Float, KeyInput, Bool) -> Ship -> Ship
 update (dt, keyInput, fireInput) ship =
   let
-    d1 = Debug.watch "invT" ship.invulnerableCounter
-    d2 = Debug.watch "invS" ship.invulnerable
     leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
     thrust = if upDownInput > 0 then upDownInput else 0
@@ -182,6 +182,10 @@ draw ship =
     bound = Draw.circle ship.radius
       |> Draw.outlined { dline | color = Color.red }
   in
-  Draw.group [ triangle , engines , bound ]
-    |> Draw.rotate ( degrees (ship.facing + 90 ))
-    |> Draw.move (ship.position.x, ship.position.y)
+  if ship.dead then
+    Draw.circle 0
+      |> Draw.filled Color.black
+  else
+    Draw.group [ triangle , engines , bound ]
+      |> Draw.rotate ( degrees (ship.facing + 90 ))
+      |> Draw.move (ship.position.x, ship.position.y)

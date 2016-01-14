@@ -11,6 +11,7 @@ import Bullet exposing (Bullet)
 import Rock exposing (Rock)
 import Explosion.Explosion as Explosion exposing (Explosion)
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
+import Overlay.Message as Message exposing (Message)
 import Physics
 import Level.One
 
@@ -24,6 +25,7 @@ type alias Game =
   , explosions : List Explosion
   , scoreboard : Scoreboard
   , backgroundColor : Color.Color
+  , loseMessage : Message
   }
 
 
@@ -38,6 +40,7 @@ initGame =
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
+  , loseMessage = Message.init "GAME OVER"
   }
 
 
@@ -56,8 +59,6 @@ update (dt, keyInput, fireInput) game =
 
     shipHit = if game.ship.invulnerable then False
       else Physics.hitAny rockCollideShip
-
-    d1 = Debug.watch "shipHit" shipHit
 
     newBullets = bullets
       |> List.filterMap (Bullet.update dt)
@@ -83,10 +84,17 @@ update (dt, keyInput, fireInput) game =
     newScoreboard =
       Scoreboard.update bulletCollideRock shipHit game.scoreboard
 
+    gameship = game.ship
     newShip =
-      game.ship
-        |> Ship.update  (dt, keyInput, fireInput)
-        |> Ship.loseLife shipHit
+      if game.scoreboard.lives == 0 then
+        { gameship | dead = True }
+      else
+        gameship
+          |> Ship.update  (dt, keyInput, fireInput)
+          |> Ship.loseLife shipHit
+
+    newMessage =
+        Message.update (game.scoreboard.lives == 0) game.loseMessage
 
   in
   { game
@@ -95,6 +103,7 @@ update (dt, keyInput, fireInput) game =
   , rocks = newRocks
   , explosions = shipExplosions
   , scoreboard = newScoreboard
+  , loseMessage = newMessage
   }
 
 
@@ -117,6 +126,7 @@ view game =
       , List.map Rock.draw game.rocks
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
+      , Message.draw game.loseMessage
       , [ Ship.draw game.ship ]
       ]
   in
