@@ -50,73 +50,80 @@ initGame =
 
 -- UPDATE
 
+{-| This is the core update function, equivilent to the game loop.
+-}
 update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
+    -- Determine if a new bullet has been fired.
     bullets = Bullet.fire game.ship game.bullets
 
+    -- Determine if any bullets have collided with any rocks.
     bulletCollideRock = List.map
       (detectCollisions game.rocks) bullets
 
+    -- Determine if any rocks have collided with the ship.
     rockCollideShip = List.map
       (Physics.collides game.ship) game.rocks
 
+    -- Determine if the ship is going to lose a life.
     shipHit = if game.ship.invulnerable then False
       else Physics.hitAny rockCollideShip
 
+    -- Update each bullet, and remove bullets which have expired.
     newBullets = bullets
       |> List.filterMap (Bullet.update dt)
       |> Bullet.removeDead (Bullet.onTarget bulletCollideRock)
 
+    -- Update each rock, splitting them up or removing them if necessary.
     newRocks = game.rocks
       |> List.map2 (Rock.update dt)
         (Rock.damaged (List.length game.rocks) bulletCollideRock)
       |> List.concat
 
-    newExplosions = game.explosions
+    -- Update each explosion, adding new ones where rocks are hit.
+    rockExplosions = game.explosions
       |> List.filterMap (Explosion.update dt)
       |> Explosion.create
         (Physics.getCollidePositions (List.concat bulletCollideRock))
 
-    shipExplosions = if shipHit then
-      newExplosions
-        |> Explosion.create
+    -- Add an additional explosion if the ship has been hit.
+    shipExplosions =
+      if shipHit then
+        rockExplosions |> Explosion.create
           (Physics.getCollidePositions rockCollideShip)
-    else
-      newExplosions
+      else
+        rockExplosions
 
-    newScoreboard =
-      Scoreboard.update bulletCollideRock shipHit game.scoreboard
-
-    playing = game.playing || fireInput
-
+    -- Update the ship.
     gameship = game.ship
     newShip =
+      -- Enable the ship if the game is started.
       if not game.playing && fireInput then
         { gameship | dead = False }
+      -- Disable the ship if you run out of lives.
       else if game.scoreboard.lives == 0 then
         { gameship | dead = True }
       else
+      -- Otherwise, update the ship, losing a life if necessary.
         gameship
           |> Ship.update  (dt, keyInput, fireInput)
           |> Ship.loseLife shipHit
-
-    loseMessage =
-        Message.update (game.scoreboard.lives == 0) game.loseMessage
-
-    startMessage =
-        Message.update (not game.playing) game.startMessage
-
   in
+  -- Update the game model using all the above results.
   { game
   | ship = newShip
   , bullets = newBullets
   , rocks = newRocks
   , explosions = shipExplosions
-  , scoreboard = newScoreboard
-  , loseMessage = loseMessage
-  , startMessage = startMessage
-  , playing = playing
+  -- Update messages & scoreboards.
+  , scoreboard = game.scoreboard
+    |> Scoreboard.update bulletCollideRock shipHit
+  , loseMessage = game.loseMessage
+    |> Message.update (game.scoreboard.lives == 0)
+  , startMessage = game.startMessage
+    |> Message.update (not game.playing)
+  , playing = game.playing || fireInput
   }
 
 
