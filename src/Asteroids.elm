@@ -26,6 +26,8 @@ type alias Game =
   , scoreboard : Scoreboard
   , backgroundColor : Color.Color
   , loseMessage : Message
+  , startMessage : Message
+  , playing : Bool
   }
 
 
@@ -40,7 +42,9 @@ initGame =
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
-  , loseMessage = Message.init "GAME OVER"
+  , loseMessage = Message.init False "GAME OVER"
+  , startMessage = Message.init True "PRESS SPACE TO START"
+  , playing = False
   }
 
 
@@ -84,17 +88,24 @@ update (dt, keyInput, fireInput) game =
     newScoreboard =
       Scoreboard.update bulletCollideRock shipHit game.scoreboard
 
+    playing = game.playing || fireInput
+
     gameship = game.ship
     newShip =
-      if game.scoreboard.lives == 0 then
+      if not game.playing && fireInput then
+        { gameship | dead = False }
+      else if game.scoreboard.lives == 0 then
         { gameship | dead = True }
       else
         gameship
           |> Ship.update  (dt, keyInput, fireInput)
           |> Ship.loseLife shipHit
 
-    newMessage =
+    loseMessage =
         Message.update (game.scoreboard.lives == 0) game.loseMessage
+
+    startMessage =
+        Message.update (not game.playing) game.startMessage
 
   in
   { game
@@ -103,7 +114,9 @@ update (dt, keyInput, fireInput) game =
   , rocks = newRocks
   , explosions = shipExplosions
   , scoreboard = newScoreboard
-  , loseMessage = newMessage
+  , loseMessage = loseMessage
+  , startMessage = startMessage
+  , playing = playing
   }
 
 
@@ -127,6 +140,7 @@ view game =
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage
+      , Message.draw game.startMessage
       , [ Ship.draw game.ship ]
       ]
   in

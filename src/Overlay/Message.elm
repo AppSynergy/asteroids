@@ -16,18 +16,18 @@ type alias Message =
 messageStyle : Text.Style
 messageStyle =
   { typeface = [ "Times New Roman", "serif" ]
-  , height = Just 80
-  , color = Color.lightRed
+  , height = Just 50
+  , color = Color.white
   , bold = True
-  , italic = True
+  , italic = False
   , line = Nothing
   }
 
 
-init : String -> Message
-init string =
+init : Bool -> String -> Message
+init b string =
   { content = string
-  , show = False
+  , show = b
   }
 
 

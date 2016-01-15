@@ -50,7 +50,7 @@ init =
   , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
-  , dead = False
+  , dead = True
   }
 
 -- UPDATE
@@ -62,11 +62,12 @@ update (dt, keyInput, fireInput) ship =
     upDownInput = toFloat keyInput.y
     thrust = if upDownInput > 0 then upDownInput else 0
   in
-  ship
-  |> updateFacing leftRightInput
-  |> updateThrust thrust dt
-  |> updateFiring fireInput
-  |> updateInvulnerable
+  if ship.dead then ship
+  else ship
+    |> updateFacing leftRightInput
+    |> updateThrust thrust dt
+    |> updateFiring fireInput
+    |> updateInvulnerable
 
 
 updateInvulnerable : Ship -> Ship
