@@ -29,8 +29,7 @@ The objective of Asteroids is to destroy asteroids and saucers.
 5. Each level starts with a few large asteroids drifting in various directions on the screen.
 
 >> PARTLY DONE:
->> - Need to introduce levels
->> - Need to randomize start positions
+>> - Need to introduce more than one level.
 
 6. Objects wrap around screen edges – for instance, an asteroid that drifts off the top edge of the screen reappears at the bottom and continues moving in the same direction.
 
@@ -74,4 +73,4 @@ The objective of Asteroids is to destroy asteroids and saucers.
 
 15. When the player loses all his lives, the game ends.
 
->> TODO
+>> DONE
