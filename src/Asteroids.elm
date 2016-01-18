@@ -12,6 +12,7 @@ import Rock exposing (Rock)
 import Explosion.Explosion as Explosion exposing (Explosion)
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
+import Skins.Basic.Sprites as Sprites
 import Physics
 import Level.One
 
@@ -143,7 +144,7 @@ view game =
     allForms = List.concat
       [ [ background ]
       , List.map Bullet.draw game.bullets
-      , List.map Rock.draw game.rocks
+      , List.map Sprites.rockSprite game.rocks
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage

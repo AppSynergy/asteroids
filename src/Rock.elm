@@ -1,7 +1,6 @@
 module Rock where
 
 import Color
-import Graphics.Collage as Draw
 import List.Extra exposing (transpose)
 
 import Physics
@@ -112,25 +111,3 @@ scatterVelocities velocity =
     , y = speed * accel * (sin angle2)
     }
   )
-
-
--- VIEW
-
-draw : Rock -> Draw.Form
-draw rock =
-  let
-    body = Draw.circle rock.radius
-      |> Draw.filled rock.color1
-    spot1 = Draw.circle (rock.radius / 5)
-      |> Draw.filled rock.color2
-      |> Draw.move (rock.radius / 3 , rock.radius / 2)
-    spot2 = Draw.circle (rock.radius / 4)
-      |> Draw.filled rock.color2
-      |> Draw.move (rock.radius / -2 , rock.radius / 3.5)
-    spot3 = Draw.circle (rock.radius / 7)
-      |> Draw.filled rock.color2
-      |> Draw.move (rock.radius / -3 , rock.radius / -1.6)
-  in
-  Draw.group [body, spot1, spot2, spot3]
-    |> Draw.rotate (degrees rock.facing)
-    |> Draw.move (rock.position.x, rock.position.y)
