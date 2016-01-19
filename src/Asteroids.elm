@@ -98,6 +98,9 @@ update (dt, keyInput, fireInput) game =
       else
         rockExplosions
 
+    -- Update each saucer.
+    newSaucers = List.map (Saucer.update dt) game.saucers
+
     -- Update the ship.
     gameship = game.ship
     newShip =
@@ -118,6 +121,7 @@ update (dt, keyInput, fireInput) game =
   | ship = newShip
   , bullets = newBullets
   , rocks = newRocks
+  , saucers = newSaucers
   , explosions = shipExplosions
   -- Update messages & scoreboards.
   , scoreboard = game.scoreboard
