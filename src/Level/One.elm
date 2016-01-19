@@ -1,6 +1,7 @@
 module Level.One where
 
 import Rock exposing (Rock)
+import Saucer exposing (Saucer)
 import Randomizer exposing (Randomizer)
 import UI exposing (gameWidth, gameHeight)
 
@@ -11,6 +12,7 @@ type alias Level =
   { number : Int
   , rand : Randomizer
   , rocks : List Rock
+  , saucers : List Saucer
   }
 
 
@@ -22,7 +24,18 @@ init =
   { number = 1
   , rand = r
   , rocks = rocks r
+  , saucers = saucers r
   }
+
+
+saucers : Randomizer -> List Saucer
+saucers rand =
+  let
+    r1 = Randomizer.update gameWidth rand
+    r2 = Randomizer.update gameHeight r1
+  in
+  [ Saucer.init 1 { x = r1.value, y = r2.value }
+  ]
 
 
 rocks : Randomizer -> List Rock

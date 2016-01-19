@@ -9,6 +9,7 @@ import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Ship exposing (Ship)
 import Bullet exposing (Bullet)
 import Rock exposing (Rock)
+import Saucer exposing (Saucer)
 import Explosion.Explosion as Explosion exposing (Explosion)
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
@@ -22,6 +23,7 @@ type alias Game =
   { ship : Ship
   , bullets : List Bullet
   , rocks : List Rock
+  , saucers : List Saucer
   , explosions : List Explosion
   , scoreboard : Scoreboard
   , backgroundColor : Color.Color
@@ -39,6 +41,7 @@ initGame =
   { ship = Ship.init
   , bullets = []
   , rocks = level.rocks
+  , saucers = level.saucers
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
@@ -144,6 +147,7 @@ view game =
       [ [ background ]
       , List.map Bullet.draw game.bullets
       , List.map Rock.draw game.rocks
+      , List.map Saucer.draw game.saucers
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage

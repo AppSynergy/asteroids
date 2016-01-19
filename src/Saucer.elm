@@ -25,3 +25,17 @@ init skill position =
   , radius = 24
   , skill = skill
   }
+
+
+-- UPDATE
+
+
+
+-- VIEW
+
+draw : Saucer -> Draw.Form
+draw saucer =
+  let d = Debug.watch "saucer" saucer.radius in
+  Draw.circle saucer.radius
+    |> Draw.filled Color.darkRed
+    |> Draw.move (saucer.position.x, saucer.position.y)
