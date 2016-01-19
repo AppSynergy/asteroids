@@ -6,6 +6,7 @@ import Graphics.Collage as Draw
 import Physics
 import Rock
 
+
 type alias Spritable a =
   { a
   | position : Physics.Vector2
@@ -15,16 +16,26 @@ type alias Spritable a =
   , color2 : Color.Color
   }
 
---type Spritable2 = Rock | AllTheOthers
 
-sprite : Spritable2 -> Draw.Form
-sprite actor =
-  case actor of
+positionForm : List Draw.Form -> Spritable a -> Draw.Form
+positionForm components actor =
+  Draw.group components
+    |> Draw.rotate (degrees actor.facing + 90)
+    |> Draw.move (actor.position.x, actor.position.y)
 
-    _ ->
-      "error"
 
-    Rock ->
+sprite : String -> Spritable a -> Draw.Form
+sprite label actor =
+  case label of
+
+    "Bullet" ->
+      let
+        dot = Draw.circle actor.radius
+          |> Draw.filled actor.color1
+      in
+      positionForm [dot] actor
+
+    "Rock" ->
       let
         body = Draw.circle actor.radius
           |> Draw.filled actor.color1
@@ -38,6 +49,7 @@ sprite actor =
           |> Draw.filled actor.color2
           |> Draw.move (actor.radius / -3 , actor.radius / -1.6)
       in
-      Draw.group [body, spot1, spot2, spot3]
-        |> Draw.rotate (degrees actor.facing)
-        |> Draw.move (actor.position.x, actor.position.y)
+      positionForm [body, spot1, spot2, spot3] actor
+
+    _ ->
+      Debug.crash "not implemented"

@@ -143,8 +143,8 @@ view game =
       |> Draw.filled game.backgroundColor
     allForms = List.concat
       [ [ background ]
-      , List.map Bullet.draw game.bullets
-      , List.map Sprites.rockSprite game.rocks
+      , List.map (Sprites.sprite "Bullet") game.bullets
+      , List.map (Sprites.sprite "Rock") game.rocks
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage

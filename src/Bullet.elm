@@ -15,7 +15,9 @@ type alias Bullet =
   , lifetime : Int
   , radius: Float
   , speed : Float
-  , color : Color.Color
+  , facing : Float
+  , color1 : Color.Color
+  , color2 : Color.Color
   }
 
 
@@ -29,7 +31,9 @@ init ship =
   , lifetime = 50
   , radius = 5
   , speed = speed
-  , color = Color.lightRed
+  , facing = 0
+  , color1 = Color.lightRed
+  , color2 = Color.red
   }
 
 
@@ -65,12 +69,3 @@ removeDead hits bullets =
 onTarget : Physics.CollisionMatrix a -> List Bool
 onTarget collisionTests =
   List.map Physics.hitAny collisionTests
-
-
--- VIEW
-
-draw : Bullet -> Draw.Form
-draw bullet =
-  Draw.circle bullet.radius
-    |> Draw.filled bullet.color
-    |> Draw.move (bullet.position.x, bullet.position.y)
