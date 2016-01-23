@@ -5,6 +5,7 @@ import Graphics.Collage as Draw
 import Graphics.Element as Element
 import Time
 
+import Model exposing (Game)
 import Sprite.Default as Sprite exposing (Sprite)
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Entity.Ship as Ship exposing (Ship)
@@ -15,41 +16,6 @@ import Particle.Explosion as Explosion exposing (Explosion)
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
 import Physics
-import Level.One
-
-
--- MODEL
-
-type alias Game =
-  { ship : Ship
-  , bullets : List Bullet
-  , rocks : List Rock
-  , saucers : List Saucer
-  , explosions : List Explosion
-  , scoreboard : Scoreboard
-  , backgroundColor : Color.Color
-  , loseMessage : Message
-  , startMessage : Message
-  , playing : Bool
-  }
-
-
-initGame : Game
-initGame =
-  let
-    level = Level.One.init
-  in
-  { ship = Ship.init
-  , bullets = []
-  , rocks = level.rocks
-  , saucers = level.saucers
-  , explosions = []
-  , scoreboard = Scoreboard.init
-  , backgroundColor = Color.black
-  , loseMessage = Message.init False "GAME OVER"
-  , startMessage = Message.init True "PRESS SPACE TO START"
-  , playing = False
-  }
 
 
 -- UPDATE
@@ -143,17 +109,6 @@ detectCollisions targets bullet =
 
 -- VIEW
 
-sprites : Game -> List Sprite
-sprites game =
-  [ List.map Sprite.RockSprite game.rocks
-  , List.map Sprite.BulletSprite game.bullets
-  , List.map Sprite.SaucerSprite game.saucers
-  , List.map Sprite.ExplosionSprite game.explosions
-  ]
-    |> List.concat
-    |> (::) (Sprite.ShipSprite game.ship)
-
-
 view : Game -> Element.Element
 view game =
   let
@@ -161,7 +116,7 @@ view game =
       |> Draw.filled game.backgroundColor
     allForms = List.concat
       [ [ background ]
-      , List.map Sprite.draw (sprites game)
+      , Sprite.draw game
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage
       , Message.draw game.startMessage
@@ -175,7 +130,7 @@ view game =
 
 gameState : Signal Game
 gameState =
-  Signal.foldp update initGame inputSignal
+  Signal.foldp update Model.init inputSignal
 
 
 inputSignal : Signal (Float, KeyInput, Bool)
