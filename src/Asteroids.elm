@@ -5,7 +5,7 @@ import Graphics.Collage as Draw
 import Graphics.Element as Element
 import Time
 
-import Skin.Default as Skin exposing (Skin)
+import Sprite.Default as Sprite exposing (Sprite)
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Entity.Ship as Ship exposing (Ship)
 import Entity.Rock as Rock exposing (Rock)
@@ -143,17 +143,16 @@ detectCollisions targets bullet =
 
 -- VIEW
 
-drawable : Game -> List Skin
-drawable game =
-  let
-  a =
-    [ List.map Skin.RockSkin game.rocks
-    , List.map Skin.BulletSkin game.bullets
-    , List.map Skin.SaucerSkin game.saucers
-    , List.map Skin.ExplosionSkin game.explosions
-    ]
-  in
-  Skin.ShipSkin game.ship :: List.concat a
+sprites : Game -> List Sprite
+sprites game =
+  [ List.map Sprite.RockSprite game.rocks
+  , List.map Sprite.BulletSprite game.bullets
+  , List.map Sprite.SaucerSprite game.saucers
+  , List.map Sprite.ExplosionSprite game.explosions
+  ]
+    |> List.concat
+    |> (::) (Sprite.ShipSprite game.ship)
+
 
 view : Game -> Element.Element
 view game =
@@ -162,7 +161,7 @@ view game =
       |> Draw.filled game.backgroundColor
     allForms = List.concat
       [ [ background ]
-      , List.map Skin.draw (drawable game)
+      , List.map Sprite.draw (sprites game)
       , Scoreboard.draw game.scoreboard
       , Message.draw game.loseMessage
       , Message.draw game.startMessage

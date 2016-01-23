@@ -1,4 +1,4 @@
-module Skin.Default where
+module Sprite.Default where
 
 import Color
 import Graphics.Collage as Draw
@@ -7,22 +7,21 @@ import Entity.Ship as Ship exposing (Ship)
 import Entity.Rock as Rock exposing (Rock)
 import Entity.Saucer as Saucer exposing (Saucer)
 import Particle.Explosion as Explosion exposing (Explosion)
-import Particle.Fragment as Fragment exposing (Fragment)
 import Particle.Bullet as Bullet exposing (Bullet)
 
-type Skin
-  = ShipSkin Ship
-  | RockSkin Rock
-  | BulletSkin Bullet
-  | SaucerSkin Saucer
-  | ExplosionSkin Explosion
+type Sprite
+  = ShipSprite Ship
+  | RockSprite Rock
+  | BulletSprite Bullet
+  | SaucerSprite Saucer
+  | ExplosionSprite Explosion
 
 
-draw : Skin -> Draw.Form
+draw : Sprite -> Draw.Form
 draw object =
   case object of
 
-    ShipSkin ship ->
+    ShipSprite ship ->
       let
         itime = ship.invulnerableCounter
         flashColor = if itime > 0 then
@@ -46,7 +45,7 @@ draw object =
           |> Draw.rotate ( degrees (ship.facing + 90 ))
           |> Draw.move (ship.position.x, ship.position.y)
 
-    RockSkin rock ->
+    RockSprite rock ->
       let
         body = Draw.circle rock.radius
           |> Draw.filled rock.color1
@@ -64,22 +63,21 @@ draw object =
         |> Draw.rotate (degrees rock.facing)
         |> Draw.move (rock.position.x, rock.position.y)
 
-    BulletSkin bullet ->
+    BulletSprite bullet ->
       Draw.circle bullet.radius
         |> Draw.filled bullet.color
         |> Draw.move (bullet.position.x, bullet.position.y)
 
-    SaucerSkin saucer ->
+    SaucerSprite saucer ->
       Draw.circle saucer.radius
         |> Draw.filled Color.darkRed
         |> Draw.move (saucer.position.x, saucer.position.y)
 
-    ExplosionSkin explosion ->
+    ExplosionSprite explosion ->
       explosion.fragments
-        |> List.map (drawFrag explosion.color)
+        |> List.map (\fragment ->
+          Draw.circle 3
+            |> Draw.filled explosion.color
+            |> Draw.move (fragment.position.x, fragment.position.y)
+          )
         |> Draw.group
-
-drawFrag color fragment =
-  Draw.circle 3
-    |> Draw.filled color
-    |> Draw.move (fragment.position.x, fragment.position.y)
