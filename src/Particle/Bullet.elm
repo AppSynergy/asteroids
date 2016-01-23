@@ -65,12 +65,3 @@ removeDead hits bullets =
 onTarget : Physics.CollisionMatrix a -> List Bool
 onTarget collisionTests =
   List.map Physics.hitAny collisionTests
-
-
--- VIEW
-
-draw : Bullet -> Draw.Form
-draw bullet =
-  Draw.circle bullet.radius
-    |> Draw.filled bullet.color
-    |> Draw.move (bullet.position.x, bullet.position.y)

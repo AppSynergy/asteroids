@@ -5,6 +5,7 @@ import Graphics.Collage as Draw
 import Graphics.Element as Element
 import Time
 
+import Skin.Default as Skin
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
 import Entity.Ship as Ship exposing (Ship)
 import Entity.Rock as Rock exposing (Rock)
@@ -149,8 +150,8 @@ view game =
       |> Draw.filled game.backgroundColor
     allForms = List.concat
       [ [ background ]
-      , List.map Bullet.draw game.bullets
-      , List.map Rock.draw game.rocks
+      , List.map Skin.drawBullet game.bullets
+      , List.map Skin.drawRock game.rocks
       , List.map Saucer.draw game.saucers
       , List.map Explosion.draw game.explosions
       , Scoreboard.draw game.scoreboard
