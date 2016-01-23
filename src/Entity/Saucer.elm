@@ -1,7 +1,6 @@
 module Entity.Saucer where
 
 import Color
-import Graphics.Collage as Draw
 
 import Physics
 
@@ -34,13 +33,3 @@ update dt saucer =
   { saucer
   | position = Physics.updatePosition True dt saucer.velocity saucer.position
   }
-
-
--- VIEW
-
-draw : Saucer -> Draw.Form
-draw saucer =
-  let d = Debug.watch "saucer" saucer.position.x in
-  Draw.circle saucer.radius
-    |> Draw.filled Color.darkRed
-    |> Draw.move (saucer.position.x, saucer.position.y)

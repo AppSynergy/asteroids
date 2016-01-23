@@ -1,7 +1,6 @@
 module Entity.Rock where
 
 import Color
-import Graphics.Collage as Draw
 import List.Extra exposing (transpose)
 
 import Physics

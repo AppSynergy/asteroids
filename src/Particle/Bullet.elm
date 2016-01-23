@@ -1,7 +1,6 @@
 module Particle.Bullet where
 
 import Color
-import Graphics.Collage as Draw
 
 import Entity.Ship as Ship exposing (Ship)
 import Physics

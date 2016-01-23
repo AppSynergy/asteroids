@@ -162,31 +162,3 @@ loseLife hit ship =
     }
   else
     ship
-
-
--- VIEW
-
-draw : Ship -> Draw.Form
-draw ship =
-  let
-    itime = ship.invulnerableCounter
-    flashColor = if itime > 0 then
-      if itime % 5 == 0 then Color.white else ship.color1
-    else
-      ship.color1
-    triangle = Draw.ngon 3 32
-      |> Draw.filled flashColor
-    engines = Draw.rect 4 32
-      |> Draw.filled ship.color2
-      |> Draw.move (-18 , 0)
-    dline = Draw.defaultLine
-    bound = Draw.circle ship.radius
-      |> Draw.outlined { dline | color = Color.red }
-  in
-  if ship.dead then
-    Draw.circle 0
-      |> Draw.filled Color.black
-  else
-    Draw.group [ triangle , engines , bound ]
-      |> Draw.rotate ( degrees (ship.facing + 90 ))
-      |> Draw.move (ship.position.x, ship.position.y)
