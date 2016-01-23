@@ -4,9 +4,7 @@ import Color exposing (..)
 import Graphics.Collage exposing (..)
 
 import Model exposing (Game)
-import Entity.Ship as Ship exposing (Ship)
-import Entity.Rock as Rock exposing (Rock)
-import Entity.Saucer as Saucer exposing (Saucer)
+import Entity.All exposing (Ship, Rock, Saucer)
 import Particle.Explosion as Explosion exposing (Explosion)
 import Particle.Bullet as Bullet exposing (Bullet)
 
@@ -14,8 +12,8 @@ import Particle.Bullet as Bullet exposing (Bullet)
 type Sprite
   = ShipSprite Ship
   | RockSprite Rock
-  | BulletSprite Bullet
   | SaucerSprite Saucer
+  | BulletSprite Bullet
   | ExplosionSprite Explosion
 
 
