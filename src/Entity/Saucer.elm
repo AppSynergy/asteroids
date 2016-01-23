@@ -1,4 +1,4 @@
-module Saucer where
+module Entity.Saucer where
 
 import Color
 import Graphics.Collage as Draw
@@ -19,7 +19,7 @@ type alias Saucer =
 
 init : Int -> Physics.Vector2 -> Saucer
 init skill position =
-  { velocity = { x = 1, y = 1}
+  { velocity = { x = 5, y = 5}
   , position = position
   , size = 1
   , radius = 24

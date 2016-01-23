@@ -1,10 +1,10 @@
-module Explosion.Explosion where
+module Particle.Explosion where
 
 import Color
 import Graphics.Collage as Draw
 
 import Physics
-import Explosion.Fragment as Fragment exposing (Fragment)
+import Particle.Fragment as Fragment exposing (Fragment)
 
 -- MODEL
 

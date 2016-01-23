@@ -1,4 +1,4 @@
-module Ship where
+module Entity.Ship where
 
 import Color
 import Graphics.Collage as Draw

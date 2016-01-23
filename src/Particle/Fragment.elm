@@ -1,4 +1,4 @@
-module Explosion.Fragment where
+module Particle.Fragment where
 
 import Color
 import Graphics.Collage as Draw

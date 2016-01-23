@@ -6,7 +6,7 @@ import Graphics.Element as Element
 import Text
 
 import Physics
-import Rock exposing (Rock)
+import Entity.Rock as Rock exposing (Rock)
 
 
 -- MODEL

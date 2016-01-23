@@ -1,9 +1,9 @@
-module Bullet where
+module Particle.Bullet where
 
 import Color
 import Graphics.Collage as Draw
 
-import Ship exposing (Ship)
+import Entity.Ship as Ship exposing (Ship)
 import Physics
 
 

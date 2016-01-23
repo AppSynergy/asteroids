@@ -6,11 +6,11 @@ import Graphics.Element as Element
 import Time
 
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
-import Ship exposing (Ship)
-import Bullet exposing (Bullet)
-import Rock exposing (Rock)
-import Saucer exposing (Saucer)
-import Explosion.Explosion as Explosion exposing (Explosion)
+import Entity.Ship as Ship exposing (Ship)
+import Entity.Rock as Rock exposing (Rock)
+import Entity.Saucer as Saucer exposing (Saucer)
+import Particle.Bullet as Bullet exposing (Bullet)
+import Particle.Explosion as Explosion exposing (Explosion)
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
 import Physics

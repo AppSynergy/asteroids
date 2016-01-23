@@ -1,7 +1,7 @@
 module Level.One where
 
-import Rock exposing (Rock)
-import Saucer exposing (Saucer)
+import Entity.Rock as Rock exposing (Rock)
+import Entity.Saucer as Saucer exposing (Saucer)
 import Randomizer exposing (Randomizer)
 import UI exposing (gameWidth, gameHeight)
 

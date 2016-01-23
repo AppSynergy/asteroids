@@ -1,4 +1,4 @@
-module Rock where
+module Entity.Rock where
 
 import Color
 import Graphics.Collage as Draw
