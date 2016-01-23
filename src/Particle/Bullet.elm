@@ -2,7 +2,7 @@ module Particle.Bullet where
 
 import Color
 
-import Entity.Ship as Ship exposing (Ship)
+import Entity.Ship exposing (Ship)
 import Physics
 
 
