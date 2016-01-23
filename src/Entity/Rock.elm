@@ -46,10 +46,8 @@ getSize rock =
 
 update : Float -> Bool -> Rock -> List Rock
 update dt damage rock =
-  let
-    newRock = split damage rock
-  in
-  List.map (update' dt) newRock
+  split damage rock
+    |> List.map (update' dt)
 
 
 update' : Float -> Rock -> Rock
@@ -58,22 +56,24 @@ update' dt rock =
     spinningRock = updateFacing dt rock
   in
   { spinningRock
-  | position = Physics.updatePosition
-    True dt rock.velocity rock.position
+  | position = rock.position
+    |> Physics.updatePosition True dt rock.velocity
   }
 
 
 updateFacing : Float -> Rock -> Rock
 updateFacing dt rock =
   { rock
-  | facing = rock.facing + (dt / 10)
+  | facing = rock.facing + dt / 10
   }
 
 
 damaged : Int -> Physics.CollisionMatrix a -> List Bool
 damaged rockCount collisionTests =
   let
-    ct = List.map Physics.hitAny (transpose collisionTests)
+    ct = collisionTests
+      |> transpose
+      |> List.map Physics.hitAny
   in
   if List.length ct < 1 then
     List.repeat rockCount False

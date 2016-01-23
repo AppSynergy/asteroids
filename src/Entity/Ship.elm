@@ -58,13 +58,12 @@ init =
 update : (Float, KeyInput, Bool) -> Ship -> Ship
 update (dt, keyInput, fireInput) ship =
   let
-    leftRightInput = toFloat keyInput.x
     upDownInput = toFloat keyInput.y
     thrust = if upDownInput > 0 then upDownInput else 0
   in
   if ship.dead then ship
   else ship
-    |> updateFacing leftRightInput
+    |> (updateFacing << toFloat) keyInput.x
     |> updateThrust thrust dt
     |> updateFiring fireInput
     |> updateInvulnerable
@@ -73,40 +72,39 @@ update (dt, keyInput, fireInput) ship =
 updateInvulnerable : Ship -> Ship
 updateInvulnerable ship =
   let
-    newTime = if ship.invulnerable && ship.invulnerableCounter > 0 then
-      ship.invulnerableCounter - 1
-    else
-      ship.invulnerableCounter
+    newTime =
+      if ship.invulnerable && ship.invulnerableCounter > 0 then
+        ship.invulnerableCounter - 1
+      else
+        ship.invulnerableCounter
   in
   { ship
   | invulnerable = ship.invulnerableCounter > 1
   , invulnerableCounter = newTime
   }
 
+
 updateFiring : Bool -> Ship -> Ship
 updateFiring fireInput ship =
   let
     fireOK = ship.coolDown == 0 && fireInput
-    newCoolDown = if fireOK then
+  in
+  { ship
+  | firing = fireOK
+  , coolDown = if fireOK then
       ship.coolDownTime
     else if ship.coolDown > 0 then
       ship.coolDown - 1
     else
       ship.coolDown
-  in
-  { ship
-  | firing = fireOK
-  , coolDown = newCoolDown
   }
 
 
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
-  let
-    turnRate = ship.turnRate
-    dF = turnRate * newFacing + ship.facing
-  in
-  { ship | facing = dF }
+  { ship | facing =
+    ship.turnRate * newFacing + ship.facing
+  }
 
 
 updateThrust : Float -> Float -> Ship -> Ship
@@ -114,8 +112,8 @@ updateThrust thrust dt ship =
   { ship
   | thrust = thrust
   , velocity = updateVelocity dt thrust ship
-  , position = Physics.updatePosition
-    True dt ship.velocity ship.position
+  , position = ship.position
+    |> Physics.updatePosition True dt ship.velocity 
   }
 
 
