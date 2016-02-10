@@ -8,6 +8,14 @@ import Physics
 
 -- MODEL
 
+type alias CanShoot a =
+  { a
+  | facing : Float
+  , position : Physics.Vector2
+  , firing : Bool
+  }
+
+
 type alias Bullet =
   { velocity : Physics.Vector2
   , position : Physics.Vector2
@@ -18,13 +26,13 @@ type alias Bullet =
   }
 
 
-init : Ship -> Bullet
-init ship =
+init : CanShoot a -> Bullet
+init shooter =
   let
     speed = 50
   in
-  { velocity = Physics.toVector speed ship.facing
-  , position = ship.position
+  { velocity = Physics.toVector speed shooter.facing
+  , position = shooter.position
   , lifetime = 50
   , radius = 5
   , speed = speed
@@ -44,10 +52,10 @@ update dt bullet =
   Physics.expiration newBullet
 
 
-fire : Ship -> List Bullet -> List Bullet
-fire ship bullets =
-  if ship.firing then
-    (init ship) :: bullets
+fire : CanShoot a -> List Bullet -> List Bullet
+fire shooter bullets =
+  if shooter.firing then
+    (init shooter) :: bullets
   else
     bullets
 

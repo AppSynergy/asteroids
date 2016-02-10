@@ -17,6 +17,14 @@ type alias Expirable a =
   }
 
 
+type alias Cooldownable a =
+  { a
+  | coolDown : Int
+  , coolDownTime : Int
+  , firing : Bool
+  }
+
+
 type alias Collidable a =
   { a
   | position : Vector2
@@ -48,6 +56,13 @@ toVector magnitude angle =
   }
 
 
+diff : Vector2 -> Vector2 -> Vector2
+diff v1 v2 =
+  { x = (v1.x - v2.x)
+  , y = (v1.y - v2.y)
+  }
+
+
 -- UPDATE
 
 expiration : Expirable a -> Maybe (Expirable a)
@@ -60,6 +75,22 @@ expiration obj =
     Just { obj | lifetime = aging }
   else
     Nothing
+
+
+cooldown : Bool -> Cooldownable a -> Cooldownable a
+cooldown fireInput obj =
+  let
+    fireOK = obj.coolDown == 0 && fireInput
+  in
+  { obj
+  | firing = fireOK
+  , coolDown = if fireOK then
+      obj.coolDownTime
+    else if obj.coolDown > 0 then
+      obj.coolDown - 1
+    else
+      obj.coolDown
+  }
 
 
 hitAny : List (CollisionResult a) -> Bool

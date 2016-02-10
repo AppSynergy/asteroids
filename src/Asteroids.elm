@@ -26,7 +26,11 @@ update : (Float, KeyInput, Bool) -> Game -> Game
 update (dt, keyInput, fireInput) game =
   let
     -- Determine if a new bullet has been fired.
-    bullets = Bullet.fire game.ship game.bullets
+    bullets =
+      Bullet.fire game.ship game.bullets
+    saucerBullets = game.saucers
+      |> List.map (\x -> Bullet.fire x game.saucerBullets)
+      |> List.concat
 
     -- Determine if any bullets have collided with any rocks.
     bulletCollideRock = List.map
@@ -44,6 +48,9 @@ update (dt, keyInput, fireInput) game =
     newBullets = bullets
       |> List.filterMap (Bullet.update dt)
       |> Bullet.removeDead (Bullet.onTarget bulletCollideRock)
+    newSaucerBullets = saucerBullets
+      |> List.filterMap (Bullet.update dt)
+      --|> Bullet.removeDead (Bullet.onTarget bulletCollideRock)
 
     -- Update each rock, splitting them up or removing them if necessary.
     newRocks = game.rocks
@@ -66,7 +73,7 @@ update (dt, keyInput, fireInput) game =
         rockExplosions
 
     -- Update each saucer.
-    newSaucers = List.map (Saucer.update dt) game.saucers
+    newSaucers = List.map (Saucer.update dt game.ship) game.saucers
 
     -- Update the ship.
     gameship = game.ship
@@ -87,6 +94,7 @@ update (dt, keyInput, fireInput) game =
   { game
   | ship = newShip
   , bullets = newBullets
+  , saucerBullets = newSaucerBullets
   , rocks = newRocks
   , saucers = newSaucers
   , explosions = shipExplosions

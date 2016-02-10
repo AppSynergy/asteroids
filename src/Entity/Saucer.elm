@@ -8,12 +8,12 @@ import Physics
 -- MODEL
 
 type alias Saucer =
+  Physics.Cooldownable ( Physics.Collidable
   { velocity : Physics.Vector2
-  , position : Physics.Vector2
   , size : Int
-  , radius : Float
   , skill : Int
-  }
+  , facing : Float
+  })
 
 
 init : Int -> Physics.Vector2 -> Saucer
@@ -21,15 +21,34 @@ init skill position =
   { velocity = { x = 5, y = 5}
   , position = position
   , size = 1
-  , radius = 24
+  , radius = 60
   , skill = skill
+  , facing = 0
+  , firing = True
+  , coolDown = 0
+  , coolDownTime = 12
   }
 
 
 -- UPDATE
 
-update : Float -> Saucer -> Saucer
-update dt saucer =
+update : Float -> Physics.Collidable a -> Saucer -> Saucer
+update dt target saucer =
   { saucer
-  | position = Physics.updatePosition True dt saucer.velocity saucer.position
+  | position = saucer.position
+    |> Physics.updatePosition True dt saucer.velocity
+  }
+    |> updateFacing 6 target
+    |> Physics.cooldown True
+
+
+updateFacing : Float -> Physics.Collidable a -> Saucer -> Saucer
+updateFacing newFacing target saucer =
+  let
+    t = Physics.diff saucer.position target.position
+    d = atan2 t.y t.x
+    d1 = Debug.watch "fd" (d,t.x,t.y)
+  in
+  { saucer
+  | facing = (d * 180 / pi) + 90
   }

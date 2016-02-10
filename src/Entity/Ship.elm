@@ -10,13 +10,10 @@ import Physics
 -- MODEL
 
 type alias Ship =
-  { firing : Bool
-  , velocity : Physics.Vector2
-  , position : Physics.Vector2
+  Physics.Cooldownable ( Physics.Collidable
+  { velocity : Physics.Vector2
   , facing : Float
   , thrust : Float
-  , coolDown : Int
-  , coolDownTime : Int
   , turnRate : Float
   , thrustRate : Float
   , dragRate : Float
@@ -24,11 +21,10 @@ type alias Ship =
   , invulnerable : Bool
   , invulnerableCounter : Int
   , invulnerableTime : Int
-  , radius : Float
   , color1 : Color.Color
   , color2 : Color.Color
   , dead : Bool
-  }
+  })
 
 
 init : Ship
@@ -65,7 +61,7 @@ update (dt, keyInput, fireInput) ship =
   else ship
     |> (updateFacing << toFloat) keyInput.x
     |> updateThrust thrust dt
-    |> updateFiring fireInput
+    |> Physics.cooldown fireInput
     |> updateInvulnerable
 
 
@@ -84,22 +80,6 @@ updateInvulnerable ship =
   }
 
 
-updateFiring : Bool -> Ship -> Ship
-updateFiring fireInput ship =
-  let
-    fireOK = ship.coolDown == 0 && fireInput
-  in
-  { ship
-  | firing = fireOK
-  , coolDown = if fireOK then
-      ship.coolDownTime
-    else if ship.coolDown > 0 then
-      ship.coolDown - 1
-    else
-      ship.coolDown
-  }
-
-
 updateFacing : Float -> Ship -> Ship
 updateFacing newFacing ship =
   { ship | facing =
@@ -113,7 +93,7 @@ updateThrust thrust dt ship =
   | thrust = thrust
   , velocity = updateVelocity dt thrust ship
   , position = ship.position
-    |> Physics.updatePosition True dt ship.velocity 
+    |> Physics.updatePosition True dt ship.velocity
   }
 
 

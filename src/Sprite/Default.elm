@@ -23,6 +23,7 @@ draw : Game -> List Form
 draw game =
   [ List.map RockSprite game.rocks
   , List.map BulletSprite game.bullets
+  , List.map BulletSprite game.saucerBullets
   , List.map SaucerSprite game.saucers
   , List.map ExplosionSprite game.explosions
   ]
@@ -83,7 +84,7 @@ drawSingle object =
         |> move (bullet.position.x, bullet.position.y)
 
     SaucerSprite saucer ->
-      circle saucer.radius
+      oval saucer.radius (saucer.radius / 2)
         |> filled darkRed
         |> move (saucer.position.x, saucer.position.y)
 

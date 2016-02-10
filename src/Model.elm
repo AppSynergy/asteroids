@@ -19,6 +19,7 @@ type alias Game =
   , bullets : List Bullet
   , rocks : List Rock
   , saucers : List Saucer
+  , saucerBullets : List Bullet
   , explosions : List Explosion
   , scoreboard : Scoreboard
   , backgroundColor : Color.Color
@@ -37,6 +38,7 @@ init =
   , bullets = []
   , rocks = level.rocks
   , saucers = level.saucers
+  , saucerBullets = []
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
