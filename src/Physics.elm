@@ -114,6 +114,11 @@ collides obj1 obj2 =
     { result = check, object = hit }
 
 
+listCollides :  List (Collidable a) -> Collidable b -> List (CollisionResult a)
+listCollides targets projectile =
+  List.map (collides projectile) targets
+
+
 getCollidePositions : List (CollisionResult a) -> List Vector2
 getCollidePositions collisions =
   let
