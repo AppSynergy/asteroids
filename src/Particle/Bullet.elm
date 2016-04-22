@@ -21,13 +21,14 @@ type alias Bullet =
   , position : Physics.Vector2
   , lifetime : Int
   , radius: Float
-  , speed : Float
-  , color : Color.Color
+  --, speed : Float
+  --, color : Color.Color
+  , bulletType : BulletType
   }
 
 
-init : CanShoot a -> Bullet
-init shooter =
+init : CanShoot a -> BulletType -> Bullet
+init shooter bulletType =
   let
     speed = 50
   in
@@ -35,8 +36,27 @@ init shooter =
   , position = shooter.position
   , lifetime = 50
   , radius = 5
-  , speed = speed
-  , color = Color.lightRed
+  , bulletType = bulletType
+  }
+
+
+type alias BulletType =
+  { speed : Float
+  , color : Color.Color
+  }
+
+
+initDefaultBullet : BulletType
+initDefaultBullet =
+  { speed = 45
+  , color = Color.lightGreen
+  }
+
+
+initSaucerBullet : BulletType
+initSaucerBullet =
+  { speed = 15
+  , color = Color.lightPurple
   }
 
 
@@ -52,10 +72,12 @@ update dt bullet =
   Physics.expiration newBullet
 
 
-fire : CanShoot a -> List Bullet -> List Bullet
-fire shooter bullets =
+fire : CanShoot a -> List Bullet -> String -> List Bullet
+fire shooter bullets bulletType =
   if shooter.firing then
-    (init shooter) :: bullets
+    case bulletType of
+      "saucer" -> (init shooter initSaucerBullet) :: bullets
+      _ -> (init shooter initDefaultBullet) :: bullets
   else
     bullets
 

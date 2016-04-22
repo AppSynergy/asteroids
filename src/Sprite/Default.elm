@@ -80,7 +80,7 @@ drawSingle object =
 
     BulletSprite bullet ->
       circle bullet.radius
-        |> filled bullet.color
+        |> filled bullet.bulletType.color
         |> move (bullet.position.x, bullet.position.y)
 
     SaucerSprite saucer ->
