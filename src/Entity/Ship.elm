@@ -132,7 +132,7 @@ updateDrag ship =
 
 loseLife : Bool -> Ship -> Ship
 loseLife hit ship =
-  if hit then
+  if not ship.invulnerable && hit then
     { ship
     | position = { x = 0, y = 0 }
     , invulnerable = True

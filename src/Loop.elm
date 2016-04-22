@@ -19,9 +19,10 @@ import Overlay.Message as Message exposing (Message)
 
 -- HELPER TYPES FOR SIGNATURES IN COMPONENTS
 
-type alias HitShip = List (Physics.CollisionResult Ship)
 type alias HitRocks = Physics.CollisionMatrix Rock
 type alias HitSaucers = Physics.CollisionMatrix Saucer
+type alias HitByRocks = Physics.CollisionMatrix Ship
+type alias HitBySaucers = Physics.CollisionMatrix Ship
 
 
 -- RUN MAIN LOOP
@@ -31,27 +32,27 @@ run (dt, keyInput, fireInput) game =
   let
 
     hitRocks : HitRocks
-    hitRocks =
-      List.map (Physics.listCollides game.rocks) game.bullets
+    hitRocks = Physics.collideLists game.bullets game.rocks
 
     hitSaucers : HitSaucers
-    hitSaucers =
-      List.map (Physics.listCollides game.saucers) game.bullets
+    hitSaucers = Physics.collideLists game.bullets game.saucers
 
-    hitShip : HitShip
-    hitShip =
-      List.map (\rock -> Physics.collides rock game.ship) game.rocks
+    hitByRocks : HitByRocks
+    hitByRocks =  Physics.collideLists game.rocks [game.ship]
+
+    hitBySaucers : HitBySaucers
+    hitBySaucers = Physics.collideLists game.saucerBullets [game.ship]
 
   in
 
   { game
-  | ship = ship' game (dt, keyInput, fireInput) hitShip
+  | ship = ship' game (dt, keyInput, fireInput) (hitByRocks, hitBySaucers)
   , bullets = bullets' game dt (hitRocks, hitSaucers)
-  , saucerBullets = saucerBullets' game dt
+  , saucerBullets = saucerBullets' game dt hitBySaucers
   , rocks = rocks' game dt hitRocks
   , saucers = saucers' game dt hitSaucers
-  , explosions = explosions' game dt (hitRocks, hitSaucers, hitShip)
-  , scoreboard = scoreboard' game (hitRocks, hitShip)
+  , explosions = explosions' game dt (hitRocks, hitSaucers, hitByRocks, hitBySaucers)
+  , scoreboard = scoreboard' game (hitRocks, hitByRocks)
   , message = message' game
   , playing = playing' game fireInput
   }
@@ -59,21 +60,18 @@ run (dt, keyInput, fireInput) game =
 
 -- MODEL RECORD COMPONENT UPDATES
 
-ship' : Game -> (Float, UI.KeyInput, Bool) -> HitShip -> Ship
-ship' game (dt, keyInput, fireInput) hits =
-  let
-    ship = game.ship
-    shipHit = if ship.invulnerable then False
-      else Physics.hitAny hits
-  in
+ship' : Game -> (Float, UI.KeyInput, Bool) -> (HitByRocks, HitBySaucers) -> Ship
+ship' game (dt, keyInput, fireInput) (byRocks, bySaucers) =
+  let ship = game.ship in
   if not game.playing && fireInput then -- game started
     { ship | dead = False }
   else if game.scoreboard.lives == 0 then -- out of lives
     { ship | dead = True }
   else
-    ship
-      |> Ship.update (dt, keyInput, fireInput)
-      |> Ship.loseLife shipHit
+    Ship.update (dt, keyInput, fireInput) ship
+    |> Ship.loseLife (Physics.hitAny (List.append
+      (List.concat byRocks) (List.concat bySaucers)
+    ))
 
 
 bullets' : Game -> Float -> (HitRocks, HitSaucers) -> List Bullet
@@ -85,19 +83,21 @@ bullets' game dt (rocks, saucers) =
     |> Bullet.fire game.ship "default"
 
 
-saucerBullets' : Game -> Float -> List Bullet
-saucerBullets' game dt =
+saucerBullets' : Game -> Float -> HitBySaucers -> List Bullet
+saucerBullets' game dt bySaucers =
   game.saucers
-    |> List.map (\x -> Bullet.fire x "saucer" game.saucerBullets )
+    |> List.map (\sbt -> Bullet.fire sbt "saucer" game.saucerBullets )
     |> List.concat
     |> List.filterMap (Bullet.update dt)
+    --|> Bullet.removeDead (Bullet.onTarget (bySaucers))
 
 
-explosions' : Game -> Float -> (HitRocks, HitSaucers, HitShip) -> List Explosion
-explosions' game dt (rocks, saucers, ship) =
+explosions' : Game -> Float -> (HitRocks, HitSaucers, HitByRocks, HitBySaucers) -> List Explosion
+explosions' game dt (rocks, saucers, byRocks, bySaucers) =
   [ Physics.getCollidePositions (List.concat rocks)
   , Physics.getCollidePositions (List.concat saucers)
-  , Physics.getCollidePositions ship
+  , Physics.getCollidePositions (List.concat byRocks)
+  , Physics.getCollidePositions (List.concat bySaucers)
   ]
     |> List.concat
     |> ExpMan.update dt game.explosions
@@ -117,12 +117,12 @@ saucers' game dt saucers =
     |> List.concat
 
 
-scoreboard' : Game -> (HitRocks, HitShip) -> Scoreboard
+scoreboard' : Game -> (HitRocks, HitByRocks) -> Scoreboard
 scoreboard' game (rocks, hits) =
   let
     ship = game.ship
     shipHit = if game.ship.invulnerable then False
-      else Physics.hitAny hits
+      else Physics.hitAny (List.concat hits)
   in
   game.scoreboard
     |> Scoreboard.update rocks shipHit

@@ -21,8 +21,6 @@ type alias Bullet =
   , position : Physics.Vector2
   , lifetime : Int
   , radius: Float
-  --, speed : Float
-  --, color : Color.Color
   , bulletType : BulletType
   }
 

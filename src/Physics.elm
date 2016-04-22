@@ -114,9 +114,9 @@ collides obj1 obj2 =
     { result = check, object = hit }
 
 
-listCollides :  List (Collidable a) -> Collidable b -> List (CollisionResult a)
-listCollides targets projectile =
-  List.map (collides projectile) targets
+collideLists : List (Collidable a) -> List (Collidable b) -> CollisionMatrix b
+collideLists a b =
+  List.map (\a' -> List.map (collides a') b) a
 
 
 getCollidePositions : List (CollisionResult a) -> List Vector2

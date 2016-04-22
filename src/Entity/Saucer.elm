@@ -24,7 +24,7 @@ init skill position =
   , skill = skill
   , facing = 0
   , firing = True
-  , coolDown = 0
+  , coolDown = 40
   , coolDownTime = 50
   }
 
