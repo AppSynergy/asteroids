@@ -1,10 +1,8 @@
 module Entity.Rock where
 
 import Color
-import List.Extra exposing (transpose)
 
 import Physics
-
 
 -- MODEL
 
@@ -66,18 +64,6 @@ updateFacing dt rock =
   { rock
   | facing = rock.facing + dt / 10
   }
-
-
-damaged : Int -> Physics.CollisionMatrix a -> List Bool
-damaged rockCount collisionTests =
-  let
-    ct = collisionTests
-      |> transpose
-      |> List.map Physics.hitAny
-  in
-  if List.length ct < 1 then
-    List.repeat rockCount False
-  else ct
 
 
 split : Bool -> Rock -> List Rock

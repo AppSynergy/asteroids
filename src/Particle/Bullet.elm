@@ -72,8 +72,8 @@ update dt bullet =
   Physics.expiration newBullet
 
 
-fire : CanShoot a -> List Bullet -> String -> List Bullet
-fire shooter bullets bulletType =
+fire : CanShoot a -> String -> List Bullet -> List Bullet
+fire shooter bulletType bullets =
   if shooter.firing then
     case bulletType of
       "saucer" -> (init shooter initSaucerBullet) :: bullets

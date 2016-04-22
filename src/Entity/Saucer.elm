@@ -1,10 +1,8 @@
 module Entity.Saucer where
 
 import Color
-import List.Extra exposing (transpose)
 
 import Physics
-
 
 -- MODEL
 
@@ -56,15 +54,3 @@ updateFacing newFacing target saucer =
   { saucer
   | facing = (d * 180 / pi) + 90
   }
-
-
-damaged : Int -> Physics.CollisionMatrix a -> List Bool
-damaged sCount collisionTests =
-  let
-    ct = collisionTests
-      |> transpose
-      |> List.map Physics.hitAny
-  in
-  if List.length ct < 1 then
-    List.repeat sCount False
-  else ct

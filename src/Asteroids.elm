@@ -8,13 +8,19 @@ import Time
 import Model exposing (Game)
 import Sprite.Default as Sprite exposing (Sprite)
 import UI exposing (gameWidth, gameHeight, KeyInput, ui)
+
 import Entity.Ship as Ship exposing (Ship)
 import Entity.Rock as Rock exposing (Rock)
 import Entity.Saucer as Saucer exposing (Saucer)
+import Entity.Destroyable as Damage
+
+import Particle.ExplosionManager as ExpMan
 import Particle.Bullet as Bullet exposing (Bullet)
 import Particle.Explosion as Explosion exposing (Explosion)
+
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
+
 import Physics
 
 
@@ -32,7 +38,7 @@ update (dt, keyInput, fireInput) game =
         col targets bullet =
           List.map (Physics.collides bullet) targets
       in
-      List.map (col game.rocks) bullets
+      List.map (col game.rocks) game.bullets
 
     -- Determine if bullets have collided with saucers.
     bulletCollideSaucer =
@@ -40,36 +46,29 @@ update (dt, keyInput, fireInput) game =
         col targets bullet =
           List.map (Physics.collides bullet) targets
       in
-      List.map (col game.saucers) bullets
+      List.map (col game.saucers) game.bullets
 
     -- Determine if any rocks have collided with the ship.
     rockCollideShip : List (Physics.CollisionResult Rock)
     rockCollideShip =
       List.map (Physics.collides game.ship) game.rocks
 
-    -- Determine if a new bullet has been fired.
-    bullets : List Bullet
-    bullets = Bullet.fire game.ship game.bullets "default"
 
     bullets' : List Bullet
-    bullets' = bullets
+    bullets' = game.bullets
       |> List.filterMap (Bullet.update dt)
       |> Bullet.removeDead (Bullet.onTarget bulletCollideRock)
       |> Bullet.removeDead (Bullet.onTarget bulletCollideSaucer)
-
-
-
+      |> Bullet.fire game.ship "default"
 
     -- Determine if the ship is going to lose a life.
     shipHit : Bool
     shipHit = if game.ship.invulnerable then False
       else Physics.hitAny rockCollideShip
 
-
-
     saucerBullets : List Bullet
     saucerBullets = game.saucers
-      |> List.map (\x -> Bullet.fire x game.saucerBullets "saucer")
+      |> List.map (\x -> Bullet.fire x "saucer" game.saucerBullets )
       |> List.concat
 
     newSaucerBullets : List Bullet
@@ -77,39 +76,31 @@ update (dt, keyInput, fireInput) game =
       |> List.filterMap (Bullet.update dt)
 
 
-    -- Add an additional explosion if the ship has been hit.
     explosions' : List Explosion
     explosions' =
-      let
-        -- Update each explosion, adding new ones where rocks are hit.
-        rockExplosions : List Explosion
-        rockExplosions = game.explosions
-          |> List.filterMap (Explosion.update dt)
-          |> Explosion.create
-            (Physics.getCollidePositions (List.concat bulletCollideRock))
-      in
-      if shipHit then
-        rockExplosions |> Explosion.create
-          (Physics.getCollidePositions rockCollideShip)
-      else
-        rockExplosions
+      [ Physics.getCollidePositions (List.concat bulletCollideRock)
+      , Physics.getCollidePositions (List.concat bulletCollideSaucer)
+      , Physics.getCollidePositions rockCollideShip
+      ]
+        --|> List.map Physics.getCollidePositions
+        |> List.concat
+        |> ExpMan.update dt game.explosions
 
-    -- Update each rock, splitting them up or removing them if necessary.
-    newRocks : List Rock
-    newRocks =
-      Rock.damaged (List.length game.rocks) bulletCollideRock
+
+    rocks' : List Rock
+    rocks' =
+      Damage.damaged (List.length game.rocks) bulletCollideRock
         |> List.map2 (Rock.update dt) game.rocks
         |> List.concat
 
-    -- Update each saucer.
+
     saucers' : List Saucer
     saucers' =
-      --List.map (Saucer.update dt game.ship) game.saucers
-      Saucer.damaged (List.length game.saucers) bulletCollideSaucer
+      Damage.damaged (List.length game.saucers) bulletCollideSaucer
         |> List.map2 (Saucer.update dt game.ship) game.saucers
         |> List.concat
 
-    -- Update the ship.
+
     gameship : Ship
     gameship = game.ship
 
@@ -132,7 +123,7 @@ update (dt, keyInput, fireInput) game =
   | ship = newShip
   , bullets = bullets'
   , saucerBullets = newSaucerBullets
-  , rocks = newRocks
+  , rocks = rocks'
   , saucers = saucers'
   , explosions = explosions'
   -- Update messages & scoreboards.
