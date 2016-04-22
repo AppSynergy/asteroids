@@ -84,7 +84,7 @@ drawSingle object =
         |> move (bullet.position.x, bullet.position.y)
 
     SaucerSprite saucer ->
-      oval saucer.radius (saucer.radius / 2)
+      oval saucer.radius (saucer.radius)
         |> filled darkRed
         |> move (saucer.position.x, saucer.position.y)
 

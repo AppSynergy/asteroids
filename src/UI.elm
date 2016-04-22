@@ -16,6 +16,6 @@ type alias KeyInput =
 
 
 ui =
-  { steering = Keyboard.arrows
+  { steering = Signal.merge Keyboard.wasd Keyboard.arrows
   , firing = Keyboard.space
   }

@@ -44,8 +44,8 @@ getSize rock =
 
 -- UPDATE
 
-update : Float -> Bool -> Rock -> List Rock
-update dt damage rock =
+update : Float -> Rock -> Bool -> List Rock
+update dt rock damage =
   split damage rock
     |> List.map (update' dt)
 
