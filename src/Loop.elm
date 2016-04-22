@@ -49,8 +49,8 @@ run (dt, keyInput, fireInput) game =
   , saucers = saucers' game dt bulletCollideSaucer
   , explosions = explosions' game dt (bulletCollideRock, bulletCollideSaucer, rockCollideShip)
   , scoreboard = scoreboard' game (bulletCollideRock, rockCollideShip)
-  , loseMessage = loseMessage' game
-  , startMessage = startMessage' game
+  --, loseMessage = loseMessage' game
+  , message = message' game
   , playing = playing' game fireInput
   }
 
@@ -130,14 +130,11 @@ scoreboard' game (bulletCollideRock, rockCollideShip) =
     |> Scoreboard.update bulletCollideRock shipHit
 
 
-loseMessage' game =
-  game.loseMessage
-    |> Message.update (game.scoreboard.lives == 0)
-
-
-startMessage' game =
-  game.startMessage
-    |> Message.update (not game.playing)
+message' game =
+  if game.scoreboard.lives == 0 then
+    game.message |> Message.update True "GAME OVER"
+  else
+    game.message |> Message.update (not game.playing) "PRESS SPACE TO START"
 
 
 playing' game fireInput =

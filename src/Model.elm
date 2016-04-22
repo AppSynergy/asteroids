@@ -23,8 +23,7 @@ type alias Game =
   , explosions : List Explosion
   , scoreboard : Scoreboard
   , backgroundColor : Color.Color
-  , loseMessage : Message
-  , startMessage : Message
+  , message : Message
   , playing : Bool
   }
 
@@ -42,7 +41,6 @@ init =
   , explosions = []
   , scoreboard = Scoreboard.init
   , backgroundColor = Color.black
-  , loseMessage = Message.init False "GAME OVER"
-  , startMessage = Message.init True "PRESS SPACE TO START"
+  , message = Message.init False ""
   , playing = False
   }

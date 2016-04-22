@@ -42,8 +42,7 @@ view game =
       [ [ background ]
       , Sprite.draw game
       , Scoreboard.draw game.scoreboard
-      , Message.draw game.loseMessage
-      , Message.draw game.startMessage
+      , Message.draw game.message
       ]
   in
   Draw.collage UI.gameWidth UI.gameHeight allForms

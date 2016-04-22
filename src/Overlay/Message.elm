@@ -33,10 +33,11 @@ init b string =
 
 -- UPDATE
 
-update : Bool -> Message -> Message
-update b message =
+update : Bool -> String -> Message -> Message
+update b string message =
   { message
-  | show = b
+  | content = string
+  , show = b
   }
 
 
