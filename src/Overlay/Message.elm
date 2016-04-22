@@ -33,8 +33,8 @@ init b string =
 
 -- UPDATE
 
-update : Bool -> String -> Message -> Message
-update b string message =
+update : Message -> Bool -> String -> Message
+update message b string =
   { message
   | content = string
   , show = b
