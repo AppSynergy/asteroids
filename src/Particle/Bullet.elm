@@ -27,19 +27,18 @@ type alias Bullet =
 
 init : CanShoot a -> BulletType -> Bullet
 init shooter bulletType =
-  let
-    speed = 50
-  in
-  { velocity = Physics.toVector speed shooter.facing
+  { velocity = Physics.toVector bulletType.speed shooter.facing
   , position = shooter.position
-  , lifetime = 50
-  , radius = 5
+  , lifetime = bulletType.lifetime
+  , radius = bulletType.radius
   , bulletType = bulletType
   }
 
 
 type alias BulletType =
   { speed : Float
+  , lifetime : Int
+  , radius : Float
   , color : Color.Color
   }
 
@@ -47,13 +46,17 @@ type alias BulletType =
 initDefaultBullet : BulletType
 initDefaultBullet =
   { speed = 45
+  , lifetime = 60
+  , radius = 4
   , color = Color.lightGreen
   }
 
 
 initSaucerBullet : BulletType
 initSaucerBullet =
-  { speed = 15
+  { speed = 25
+  , lifetime = 150
+  , radius = 6
   , color = Color.lightPurple
   }
 
@@ -87,8 +90,3 @@ removeDead hits bullets =
     rmv a = if (fst a) then Nothing else Just (snd a)
   in
   List.filterMap rmv zipped
-
-
-onTarget : Physics.CollisionMatrix a -> List Bool
-onTarget collisionTests =
-  List.map Physics.hitAny collisionTests

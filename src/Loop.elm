@@ -15,7 +15,7 @@ import Particle.Explosion as Explosion exposing (Explosion)
 
 import Overlay.Scoreboard as Scoreboard exposing (Scoreboard)
 import Overlay.Message as Message exposing (Message)
-
+import List.Extra exposing (transpose)
 
 -- HELPER TYPES FOR SIGNATURES IN COMPONENTS
 
@@ -79,21 +79,17 @@ bullets' : Game -> Float -> (HitRocks, HitSaucers) -> List Bullet
 bullets' game dt (rocks, saucers) =
   game.bullets
     |> List.filterMap (Bullet.update dt)
-    |> Bullet.removeDead (Bullet.onTarget rocks)
-    |> Bullet.removeDead (Bullet.onTarget saucers)
+    |> Bullet.removeDead (List.map Physics.hitAny rocks)
+    |> Bullet.removeDead (List.map Physics.hitAny saucers)
     |> Bullet.fire game.ship "default"
 
 
 saucerBullets' : Game -> Float -> HitBySaucers -> List Bullet
 saucerBullets' game dt bySaucers =
-  game.saucers
-    |>
-      ( game.saucerBullets
-        |> List.filterMap (Bullet.update dt)
-        |> List.foldr (\s -> Bullet.fire s "saucer")
-      )
-    |> Bullet.removeDead [Physics.hitAny (List.concat bySaucers)]
-
+  game.saucerBullets
+    |> List.filterMap (Bullet.update dt)
+    |> Bullet.removeDead (List.map (.result) (List.concat bySaucers))
+    |> List.append (List.foldr (\s -> Bullet.fire s "saucer") [] game.saucers)
 
 
 explosions' : Game -> Float -> (HitRocks, HitSaucers, Bool) -> List Explosion
