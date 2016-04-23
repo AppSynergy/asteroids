@@ -98,6 +98,13 @@ hitAny =
   List.any (\n -> n.result == True)
 
 
+hitMatrixList : List (CollisionMatrix a) -> Bool
+hitMatrixList xs =
+  List.map List.concat xs
+    |> List.concat
+    |> hitAny
+
+
 collides : Collidable a -> Collidable b -> CollisionResult b
 collides obj1 obj2 =
   let

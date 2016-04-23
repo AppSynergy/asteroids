@@ -49,7 +49,7 @@ updateFacing newFacing target saucer =
   let
     t = Physics.diff saucer.position target.position
     d = atan2 t.y t.x
-    d1 = Debug.watch "fd" (d,t.x,t.y)
+    --d1 = Debug.watch "fd" (d,t.x,t.y)
   in
   { saucer
   | facing = (d * 180 / pi) + 90

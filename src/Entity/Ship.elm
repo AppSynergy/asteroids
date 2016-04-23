@@ -23,7 +23,6 @@ type alias Ship =
   , invulnerableTime : Int
   , color1 : Color.Color
   , color2 : Color.Color
-  , dead : Bool
   })
 
 
@@ -46,7 +45,6 @@ init =
   , radius = 28
   , color1 = Color.lightGreen
   , color2 = Color.lightOrange
-  , dead = True
   }
 
 -- UPDATE
@@ -57,8 +55,7 @@ update (dt, keyInput, fireInput) ship =
     upDownInput = toFloat keyInput.y
     thrust = if upDownInput > 0 then upDownInput else 0
   in
-  if ship.dead then ship
-  else ship
+  ship
     |> (updateFacing << toFloat) keyInput.x
     |> updateThrust thrust dt
     |> Physics.cooldown fireInput

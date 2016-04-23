@@ -52,13 +52,9 @@ drawSingle object =
         bound = circle ship.radius
           |> outlined { dline | color = red }
       in
-      if ship.dead then
-        circle 0
-          |> filled black
-      else
-        group [ triangle , engines , bound ]
-          |> rotate ( degrees (ship.facing + 90 ))
-          |> move (ship.position.x, ship.position.y)
+      group [ triangle , engines , bound ]
+        |> rotate ( degrees (ship.facing + 90 ))
+        |> move (ship.position.x, ship.position.y)
 
     RockSprite rock ->
       let
